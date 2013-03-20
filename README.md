@@ -1,5 +1,5 @@
 Kalkulačka
-=====
+==
 Cílem semestrální práce bude vytvořit kalkulačku která bude zvládat výpočet základních aritmetických operací jako jsou +,-,*,/, mocnina a odmocnina. Při výpočtech bude dodržovat matematické zákony jako přednost matematických operací.
 ==
 Vstup bude možné načíst do souboru a opět jej do souboru uložit.

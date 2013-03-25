@@ -1,11 +1,10 @@
 package Math;
- 
-public abstract class Expr {
- 
-    abstract double evaluate();
- 
-    abstract Expr derive(char var);
- 
-    abstract Expr simplify();
 
+public abstract class Expr {
+
+    public abstract double evaluate();
+
+    public abstract Expr derive(char var);
+
+    public abstract Expr simplify();
 }

@@ -8,7 +8,8 @@ package Math;
  *
  * @author michalblazek
  */
-public class Constant extends Expr{
+public class Constant extends Expr {
+
     public double constant;
 
     public Constant(double constant) {
@@ -17,27 +18,24 @@ public class Constant extends Expr{
 
     public Constant() {
     }
-    
 
     @Override
-    double evaluate() {
+    public double evaluate() {
         return this.constant;
     }
 
     @Override
-    Expr derive(char var) {
+    public Expr derive(char var) {
         return new Constant(0);
     }
 
     @Override
-    Expr simplify() {
+    public Expr simplify() {
         return new Constant(this.constant);
     }
 
     @Override
     public String toString() {
-        return String.format("%.3f",constant);
+        return String.format("%.3f", constant);
     }
-    
-    
 }

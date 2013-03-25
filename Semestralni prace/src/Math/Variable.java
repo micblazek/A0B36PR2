@@ -8,9 +8,10 @@ package Math;
  *
  * @author michalblazek
  */
-public class Variable extends Expr{
+public class Variable extends Expr {
+
     public char name;
-    public double value;    
+    public double value;
 
     public Variable(char name, double value) {
         this.name = name;
@@ -23,21 +24,21 @@ public class Variable extends Expr{
     }
 
     @Override
-    double evaluate() {
+    public double evaluate() {
         return value;
     }
 
     @Override
-    Expr derive(char var) {
-        if(name == var){
+    public Expr derive(char var) {
+        if (name == var) {
             return new Constant(1);
-        }else{
+        } else {
             return new Constant(0);
         }
     }
 
     @Override
-    Expr simplify() {
+    public Expr simplify() {
         return new Variable(name, value);
     }
 
@@ -45,6 +46,4 @@ public class Variable extends Expr{
     public String toString() {
         return Character.toString(name);
     }
-    
-    
 }

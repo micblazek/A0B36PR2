@@ -64,7 +64,13 @@ public class BinOp extends Expr {
             case '/': {
                 return new BinOp('/', new BinOp('-', new BinOp('*', c1.derive(var), c2), new BinOp('*', c1, c2.derive(var))), new BinOp('*', c2, c2));
             }
-
+            case '^': {
+                if(c1.derive(var).evaluate()==1){
+                    return new BinOp('*', new BinOp('^',new BinOp('*', c2, c1) , new Constant(c2.evaluate())), c1.derive(var));
+                }else{
+                    return c1.derive(var);
+                }
+            }
             default: {
                 return new Constant(Double.NaN);
             }
@@ -159,7 +165,7 @@ public class BinOp extends Expr {
         return "(" + c1.toString() + " " + operand + " " + c2.toString() + ")";
     }
 
-    public static BinOp fromArrayList(ArrayList List) throws ArrayIndexOutOfBoundsException{
+    public static BinOp fromArrayList(ArrayList List) throws ArrayIndexOutOfBoundsException {
 
         int pocetzavorek = 0;
         int indexKZ = 0; // Index konečné závorky
@@ -249,5 +255,5 @@ public class BinOp extends Expr {
 //            
 //        }
         return (BinOp) List.get(0);
-    }    
+    }
 }

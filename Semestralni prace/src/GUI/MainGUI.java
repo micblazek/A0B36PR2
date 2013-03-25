@@ -5,6 +5,10 @@
 package GUI;
 
 
+import Math.BinOp;
+import Math.Constant;
+import System.Source;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -15,14 +19,13 @@ import javax.swing.text.BadLocationException;
  * @author michalblazek
  */
 public class MainGUI extends javax.swing.JFrame {
-
+    
 
     /**
      * Creates new form main
      */
     public MainGUI() {
-        
-        initComponents();
+      initComponents();  
     }
 
     /**
@@ -475,10 +478,12 @@ public class MainGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_txfVstupActionPerformed
 
     private void btnRovnaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRovnaseActionPerformed
+        ArrayList input;
+        input = new ArrayList(Source.fillColection(txfVstup.getText()));
         try {
-            if (racionalnikalkulacka.RacionalniKalkulacka.text(racionalnikalkulacka.RacionalniKalkulacka.naplnKolekci(txfVstup.getText()))) {
-                if (racionalnikalkulacka.RacionalniKalkulacka.zavorky(racionalnikalkulacka.RacionalniKalkulacka.naplnKolekci(txfVstup.getText()))) {
-                    txfVystup.setText(Double.toString(racionalnikalkulacka.RacionalniKalkulacka.vypocet(racionalnikalkulacka.RacionalniKalkulacka.naplnKolekci(txfVstup.getText()))));
+            if (Source.textControl(input)) {
+                if (Source.bracers(input)) {
+                    txfVystup.setText(Double.toString(BinOp.fromArrayList(input).evaluate()));
                 } else {
                     txfVystup.setText("Chybná syntaxe, zkontroluj závorky.");
                 }
@@ -487,6 +492,8 @@ public class MainGUI extends javax.swing.JFrame {
             }
         } catch (NumberFormatException ex) {
             txfVystup.setText("Chyby vstupních dat, zkontroluj syntaxi.");
+        } catch (ArrayIndexOutOfBoundsException ey) {
+            txfVystup.setText("Chyby vstupních dat.");
         }
     }//GEN-LAST:event_btnRovnaseActionPerformed
 
@@ -514,18 +521,20 @@ public class MainGUI extends javax.swing.JFrame {
     private void mUlozitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mUlozitActionPerformed
         JFileChooser uloz = new JFileChooser();
         int n = uloz.showOpenDialog(uloz);
-        racionalnikalkulacka.RacionalniKalkulacka.ulozDoSouboru(uloz.getSelectedFile().toString(), txfVstup.getText() + " = " + txfVystup.getText());
+        Source.saveAsFile(uloz.getSelectedFile().toString(), txfVstup.getText() + " = " + txfVystup.getText());
     }//GEN-LAST:event_mUlozitActionPerformed
 
     private void mNacistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mNacistActionPerformed
         JFileChooser nacti = new JFileChooser();
         int n = nacti.showOpenDialog(nacti);
-        txfVstup.setText(racionalnikalkulacka.RacionalniKalkulacka.nactiSoubor(nacti.getSelectedFile().toString()));
+        txfVstup.setText(Source.loadFile(nacti.getSelectedFile().toString()));
+        ArrayList input;
+        input = new ArrayList(Source.fillColection(txfVstup.getText()));
 
         try {
-            if (racionalnikalkulacka.RacionalniKalkulacka.text(racionalnikalkulacka.RacionalniKalkulacka.naplnKolekci(txfVstup.getText()))) {
-                if (racionalnikalkulacka.RacionalniKalkulacka.zavorky(racionalnikalkulacka.RacionalniKalkulacka.naplnKolekci(txfVstup.getText()))) {
-                    txfVystup.setText(Double.toString(racionalnikalkulacka.RacionalniKalkulacka.vypocet(racionalnikalkulacka.RacionalniKalkulacka.naplnKolekci(txfVstup.getText()))));
+            if (Source.textControl(input)) {
+                if (Source.bracers(input)) {
+                   txfVystup.setText(Double.toString(BinOp.fromArrayList(input).evaluate()));
                 } else {
                     txfVystup.setText("Chybná syntaxe, zkontroluj závorky.");
                 }
@@ -534,6 +543,8 @@ public class MainGUI extends javax.swing.JFrame {
             }
         } catch (NumberFormatException ex) {
             txfVystup.setText("Chyby vstupních dat, zkontroluj syntaxi.");
+        } catch (ArrayIndexOutOfBoundsException ey) {
+            txfVystup.setText("Chyby vstupních dat.");
         }
     }//GEN-LAST:event_mNacistActionPerformed
 

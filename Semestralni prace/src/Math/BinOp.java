@@ -65,9 +65,9 @@ public class BinOp extends Expr {
                 return new BinOp('/', new BinOp('-', new BinOp('*', c1.derive(var), c2), new BinOp('*', c1, c2.derive(var))), new BinOp('*', c2, c2));
             }
             case '^': {
-                if(c1.derive(var).evaluate()==1){
-                    return new BinOp('*', new BinOp('^',new BinOp('*', c2, c1) , new Constant(c2.evaluate())), c1.derive(var));
-                }else{
+                if (c1.derive(var).evaluate() == 1) {
+                    return new BinOp('*', new BinOp('^', new BinOp('*', c2, c1), new Constant(c2.evaluate())), c1.derive(var));
+                } else {
                     return c1.derive(var);
                 }
             }
@@ -87,11 +87,11 @@ public class BinOp extends Expr {
 
         switch (operand) {
             case '+': {
-                if ("du1.Constant".equals(x1.getClass().getName())) {
+                if ("Math.Constant".equals(x1.getClass().getName())) {
                     if (x1.evaluate() == 0) {
                         return x2;
                     }
-                    if ("du1.Constant".equals(x2.getClass().getName())) {
+                    if ("Math.Constant".equals(x2.getClass().getName())) {
                         if (x2.evaluate() == 0) {
                             return x1;
                         }
@@ -100,11 +100,11 @@ public class BinOp extends Expr {
                 break;
             }
             case '-': {
-                if ("du1.Constant".equals(x1.getClass().getName())) {
+                if ("Math.Constant".equals(x1.getClass().getName())) {
                     if (x1.evaluate() == 0) {
                         return x2;
                     }
-                    if ("du1.Constant".equals(x2.getClass().getName())) {
+                    if ("Math.Constant".equals(x2.getClass().getName())) {
                         if (x2.evaluate() == 0) {
                             return x1;
                         }
@@ -113,24 +113,24 @@ public class BinOp extends Expr {
                 }
             }
             case '*': {
-                if ("du1.Constant".equals(x1.getClass().getName())) {
+                if ("Math.Constant".equals(x1.getClass().getName())) {
                     if (x1.evaluate() == 0) {
                         return new Constant(0);
                     }
                 }
-                if ("du1.Constant".equals(x2.getClass().getName())) {
+                if ("Math.Constant".equals(x2.getClass().getName())) {
                     if (x2.evaluate() == 0) {
                         return new Constant(0);
 
                     }
                 }
-                if ("du1.Constant".equals(x1.getClass().getName())) {
+                if ("Math.Constant".equals(x1.getClass().getName())) {
                     if (x1.evaluate() == 1) {
                         return x2;
 
                     }
                 }
-                if ("du1.Constant".equals(x2.getClass().getName())) {
+                if ("Math.Constant".equals(x2.getClass().getName())) {
                     if (x2.evaluate() == 1) {
                         return x1;
                     }
@@ -140,20 +140,43 @@ public class BinOp extends Expr {
 
             }
             case '/': {
-                if ("du1.Constant".equals(x1.getClass().getName())) {
+                if ("Math.Constant".equals(x1.getClass().getName())) {
                     if (x1.evaluate() == 0) {
                         return new Constant(0);
                     }
                 }
-                if ("du1.Constant".equals(x2.getClass().getName())) {
+                if ("Math.Constant".equals(x2.getClass().getName())) {
                     if (x2.evaluate() == 1) {
                         return x1;
                     }
                 }
             }
+            case '^': {
+                if ("Math.Constant".equals(x1.getClass().getName())) {
+                    if (x1.evaluate() == 0) {
+                        return new Constant(0);
+                    }
+                }
+                if ("Math.Constant".equals(x1.getClass().getName())) {
+                    if (x1.evaluate() == 1) {
+                        return new Constant(1);
+                    }
+                }
+                if ("Math.Constant".equals(x2.getClass().getName())) {
+                    if (x2.evaluate() == 1) {
+                        return x1;
+                    }
+                }
+                if ("Math.Constant".equals(x2.getClass().getName())) {
+                    if (x2.evaluate() == 0) {
+                        return new Constant(1);
+                    }
+                }
+            }
+
 
         }
-        if ("du1.Constant".equals(x2.getClass().getName()) && "du1.Constant".equals(x1.getClass().getName())) {
+        if ("Math.Constant".equals(x2.getClass().getName()) && "Math.Constant".equals(x1.getClass().getName())) {
             return new Constant(new BinOp(operand, x1, x2).evaluate());
         } else {
             return new BinOp(operand, x1, x2);
@@ -162,10 +185,13 @@ public class BinOp extends Expr {
 
     @Override
     public String toString() {
-        return "(" + c1.toString() + " " + operand + " " + c2.toString() + ")";
+        return c1.toString() + " " + operand + " " + c2.toString();
     }
 
-    public static BinOp fromArrayList(ArrayList List) throws ArrayIndexOutOfBoundsException {
+    public static Expr fromArrayList(ArrayList List) throws ArrayIndexOutOfBoundsException {
+        if (List.size()==1 && List.get(0).getClass()==BinOp.class){
+            return (Expr) List.get(0);
+        }
 
         int pocetzavorek = 0;
         int indexKZ = 0; // Index konečné závorky
@@ -182,7 +208,10 @@ public class BinOp extends Expr {
         if ((List.get(0).toString().charAt(0) == '-') && List.get(0).toString().length() == 1) {
             List.add(1, new Constant(Double.valueOf(List.get(1).toString()) * -1));
             List.remove(0);
-            List.remove(1);
+            List.remove(1); // odepbere se index 0, to co bylo index 1 je 0, 2 je 1
+        }
+        if ((List.get(0).toString().charAt(0) == '+') && List.get(0).toString().length() == 1) {           
+            List.remove(0);          
         }
         // Převede čísla v řetězci na konstanty.
         for (int i = 0; i < List.size(); i++) {
@@ -213,6 +242,7 @@ public class BinOp extends Expr {
                 List.remove(j);
             }
             //Zavolá znovu metodu výpočet, jako vstup bude ArrayList vnitřní závorky.
+            //List.add(indexZZ, BinOp.fromArrayList(ListP));
             List.add(indexZZ, BinOp.fromArrayList(ListP));
             ListP.clear();
             pocetzavorek--;
@@ -224,7 +254,6 @@ public class BinOp extends Expr {
          * matematických zákonů. Nejprve se provede násobení a dělení a poté
          * teprve sčítání a odčítání.
          */
-//        try{
         for (int i = 0; i < List.size(); i++) {
             if (List.get(i).getClass() == "".getClass() && (List.get(i).toString().charAt(0) == '^')) {
                 List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), (Expr) List.get(i + 1)));
@@ -251,9 +280,6 @@ public class BinOp extends Expr {
                 i--;
             }
         }
-//        }catch (ArrayIndexOutOfBoundsException e){
-//            
-//        }
-        return (BinOp) List.get(0);
+        return new Bracers('(', (Expr) List.get(0), ')');
     }
 }

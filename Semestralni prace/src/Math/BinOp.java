@@ -185,7 +185,7 @@ public class BinOp extends Expr {
 
     @Override
     public String toString() {
-        return c1.toString() + " " + operand + " " + c2.toString();
+        return c1.toString() + operand  + c2.toString();
     }
 
     public static Expr fromArrayList(ArrayList List) throws ArrayIndexOutOfBoundsException {
@@ -212,7 +212,7 @@ public class BinOp extends Expr {
         }
         if ((List.get(0).toString().charAt(0) == '+') && List.get(0).toString().length() == 1) {           
             List.remove(0);          
-        }
+        }      
         // Převede čísla v řetězci na konstanty.
         for (int i = 0; i < List.size(); i++) {
             if (Character.isDigit(List.get(i).toString().charAt(0)) && List.get(i).getClass().equals(Constant.class) == false) {
@@ -248,6 +248,12 @@ public class BinOp extends Expr {
             pocetzavorek--;
             indexKZ = 0;
             indexZZ = Integer.MAX_VALUE;
+        }
+        // Jestliže je za nebo před závorkou číslo bude bude mezi číslo a závorku vložen znak násobení.
+        for (int i = 0; i < List.size() - 1; i++) {
+            if (Character.isDigit(List.get(i).toString().charAt(0)) && Character.isDigit(List.get(i + 1).toString().charAt(0))) {
+                List.add(i + 1, '*');
+            }
         }
         /**
          * Vlastní výpočet, vložený řetězec skládá na class BinOp podle

@@ -36,6 +36,12 @@ public class Constant extends Expr {
 
     @Override
     public String toString() {
-        return String.format("%.3f", constant);
+      //return String.format("%.3f", constant);
+        if(constant%1==0){
+            return Integer.toString((int) constant);
+        }else {
+            return Double.toString(constant);
+        }
+        
     }
 }

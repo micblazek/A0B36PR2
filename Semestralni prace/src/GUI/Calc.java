@@ -8,25 +8,26 @@ import Math.*;
 import System.Source;
 import java.awt.Graphics;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Scanner;
 import javax.swing.JFileChooser;
-import javax.swing.text.BadLocationException;
 
 /**
  *
  * @author michalblazek
  */
-public class MainGUI extends javax.swing.JFrame {
 
+
+public class Calc extends javax.swing.JFrame {
+    public String vstup = new String();
     public String zadani = new String();
     public String vysledek = new String();
-    public int poziceScrolu = 0;
+    public int poziceScrolu = 0;   
+    
 
     /**
      * Creates new form main
      */
-    public MainGUI() {
+    public Calc() {
         initComponents();
     }
 
@@ -39,8 +40,6 @@ public class MainGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        txfVstup = new javax.swing.JTextField();
-        txfVystup = new javax.swing.JTextField();
         btn0 = new javax.swing.JButton();
         btn1 = new javax.swing.JButton();
         btn2 = new javax.swing.JButton();
@@ -55,7 +54,7 @@ public class MainGUI extends javax.swing.JFrame {
         btnRovnase = new javax.swing.JButton();
         btnSmazat = new javax.swing.JButton();
         btnDesetinaTecka = new javax.swing.JButton();
-        jPanel = new javax.swing.JPanel();
+        Operace = new javax.swing.JPanel();
         btnDeleni = new javax.swing.JButton();
         btnPlus = new javax.swing.JButton();
         btnNasobeni = new javax.swing.JButton();
@@ -64,6 +63,9 @@ public class MainGUI extends javax.swing.JFrame {
         btnZavorkaP = new javax.swing.JButton();
         btnOdmocnina = new javax.swing.JButton();
         btnMinus = new javax.swing.JButton();
+        Panel = new javax.swing.JPanel();
+        btnZlomek = new javax.swing.JButton();
+        btnTabulator = new javax.swing.JButton();
         Displej = new javax.swing.JPanel(){
             public void paint(Graphics g){
                 super.paint(g);
@@ -82,15 +84,6 @@ public class MainGUI extends javax.swing.JFrame {
         setAlwaysOnTop(true);
         setLocationByPlatform(true);
         setResizable(false);
-
-        txfVstup.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txfVstupActionPerformed(evt);
-            }
-        });
-
-        txfVystup.setEditable(false);
-        txfVystup.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         btn0.setText("0");
         btn0.addActionListener(new java.awt.event.ActionListener() {
@@ -142,6 +135,11 @@ public class MainGUI extends javax.swing.JFrame {
         });
 
         btn7.setText("7");
+        btn7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NumAction(evt);
+            }
+        });
 
         btn8.setText("8");
         btn8.addActionListener(new java.awt.event.ActionListener() {
@@ -185,8 +183,8 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
 
-        jPanel.setBackground(new java.awt.Color(204, 204, 204));
-        jPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        Operace.setBackground(new java.awt.Color(204, 204, 204));
+        Operace.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         btnDeleni.setText("/");
         btnDeleni.addActionListener(new java.awt.event.ActionListener() {
@@ -246,54 +244,93 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
 
-        org.jdesktop.layout.GroupLayout jPanelLayout = new org.jdesktop.layout.GroupLayout(jPanel);
-        jPanel.setLayout(jPanelLayout);
-        jPanelLayout.setHorizontalGroup(
-            jPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanelLayout.createSequentialGroup()
+        org.jdesktop.layout.GroupLayout OperaceLayout = new org.jdesktop.layout.GroupLayout(Operace);
+        Operace.setLayout(OperaceLayout);
+        OperaceLayout.setHorizontalGroup(
+            OperaceLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(OperaceLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(jPanelLayout.createSequentialGroup()
-                        .add(btnNasobeni, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btnDeleni, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jPanelLayout.createSequentialGroup()
-                        .add(btnPlus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(btnMinus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jPanelLayout.createSequentialGroup()
-                        .add(btnZavorkaL, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btnZavorkaP, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(btnMocnina, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanelLayout.createSequentialGroup()
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(btnOdmocnina, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .add(OperaceLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(OperaceLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                        .add(OperaceLayout.createSequentialGroup()
+                            .add(btnNasobeni, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(btnDeleni, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(OperaceLayout.createSequentialGroup()
+                            .add(btnPlus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(btnMinus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(OperaceLayout.createSequentialGroup()
+                            .add(btnZavorkaL, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(btnZavorkaP, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(btnMocnina, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(btnOdmocnina, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
-        jPanelLayout.setVerticalGroup(
-            jPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanelLayout.createSequentialGroup()
-                .add(jPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+        OperaceLayout.setVerticalGroup(
+            OperaceLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(OperaceLayout.createSequentialGroup()
+                .add(OperaceLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnPlus)
                     .add(btnMinus))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                .add(OperaceLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnNasobeni)
                     .add(btnDeleni))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                .add(OperaceLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnZavorkaL)
                     .add(btnZavorkaP))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(btnMocnina)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(btnOdmocnina)
+                .addContainerGap())
+        );
+
+        Panel.setBackground(new java.awt.Color(204, 204, 204));
+        Panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        btnZlomek.setText("Zlomek");
+        btnZlomek.setActionCommand("^");
+        btnZlomek.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnZlomekNumAction(evt);
+            }
+        });
+
+        btnTabulator.setText("Tabulator");
+        btnTabulator.setActionCommand("^");
+        btnTabulator.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTabulatorNumAction(evt);
+            }
+        });
+
+        org.jdesktop.layout.GroupLayout PanelLayout = new org.jdesktop.layout.GroupLayout(Panel);
+        Panel.setLayout(PanelLayout);
+        PanelLayout.setHorizontalGroup(
+            PanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(PanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(PanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(btnZlomek, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(btnTabulator, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+        PanelLayout.setVerticalGroup(
+            PanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(PanelLayout.createSequentialGroup()
+                .add(btnZlomek)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(btnOdmocnina))
+                .add(btnTabulator)
+                .add(0, 0, Short.MAX_VALUE))
         );
 
         Displej.setBackground(new java.awt.Color(255, 255, 255));
         Displej.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Displej.setFocusCycleRoot(true);
         Displej.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
 
         DisplejScrollBar.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
@@ -354,59 +391,56 @@ public class MainGUI extends javax.swing.JFrame {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                        .add(txfVystup)
-                        .add(txfVstup, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 294, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, Displej, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(layout.createSequentialGroup()
-                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                        .add(layout.createSequentialGroup()
-                                            .add(btn1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                            .add(btn2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                        .add(layout.createSequentialGroup()
-                                            .add(btn0, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                            .add(btnDesetinaTecka, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                        .add(btnSmazat, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .add(btn3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                                .add(layout.createSequentialGroup()
-                                    .add(btn4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(btn5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(btn6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                .add(layout.createSequentialGroup()
-                                    .add(btn7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(5, 5, 5)
-                                    .add(btn8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(btn9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                .add(layout.createSequentialGroup()
-                                    .add(btnRovnase, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(btnClean, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                            .add(jPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(layout.createSequentialGroup()
+                                .add(1, 1, 1)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                                    .add(layout.createSequentialGroup()
+                                        .add(btn4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(btn5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(btn6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                    .add(layout.createSequentialGroup()
+                                        .add(btn7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(btn8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(5, 5, 5)
+                                        .add(btn9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                    .add(layout.createSequentialGroup()
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                            .add(layout.createSequentialGroup()
+                                                .add(btn1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                .add(btn2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                            .add(layout.createSequentialGroup()
+                                                .add(btn0, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                .add(btnDesetinaTecka, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                            .add(btnSmazat, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                            .add(btn3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                .add(btnRovnase, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(btnClean, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(Operace, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(Panel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(Displej, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(txfVstup, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(txfVystup, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(Displej, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(layout.createSequentialGroup()
                         .add(2, 2, 2)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
@@ -415,9 +449,9 @@ public class MainGUI extends javax.swing.JFrame {
                             .add(btn7))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(btn4)
+                            .add(btn6)
                             .add(btn5)
-                            .add(btn6))
+                            .add(btn4))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(btn3)
@@ -432,90 +466,104 @@ public class MainGUI extends javax.swing.JFrame {
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(btnClean)
                             .add(btnRovnase)))
-                    .add(jPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .add(Operace, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 171, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, Panel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(14, 14, 14))
         );
+
+        getAccessibleContext().setAccessibleName("Kalkulačka");
+        getAccessibleContext().setAccessibleDescription("Já to spočítám !!!");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void NumAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NumAction
-       txfVstup.setText(txfVstup.getText() + evt.getActionCommand());
+        vstup += evt.getActionCommand();
+        zadani += evt.getActionCommand();
+        Displej.repaint();
     }//GEN-LAST:event_NumAction
 
     private void btnCleanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCleanActionPerformed
-        txfVstup.setText("");
-        txfVystup.setText("");
+        vstup = "";
+        zadani = "";
+        vysledek = "";
+        Displej.repaint();
     }//GEN-LAST:event_btnCleanActionPerformed
 
-    private void txfVstupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfVstupActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txfVstupActionPerformed
- 
     private void btnRovnaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRovnaseActionPerformed
         ArrayList input;
-        input = new ArrayList(Source.fillColection(txfVstup.getText()));
+        input = new ArrayList(Source.fillColection(vstup));
         try {
             if (Source.textControl(input)) {
                 if (Source.bracers(input)) {
-                    zadani = BinOp.fromArrayList(input).toString();
                     vysledek = Double.toString(BinOp.fromArrayList(input).evaluate());
-                    txfVystup.setText(vysledek);
                     Displej.repaint();
                 } else {
-                    txfVystup.setText("Chybná syntaxe, zkontroluj závorky.");
+                    vysledek = "Chybná syntaxe, zkontroluj závorky.";
+                    Displej.repaint();
                 }
             } else {
-                txfVystup.setText("V zadání je nepodporovaný znak.");
+                vysledek = "V zadání je nepodporovaný znak.";
+                Displej.repaint();
             }
         } catch (NumberFormatException ex) {
-            txfVystup.setText("Chyby vstupních dat, zkontroluj syntaxi.");
+            vysledek = "Chyba vstupních dat.";
+            Displej.repaint();
         } catch (ArrayIndexOutOfBoundsException ey) {
-            txfVystup.setText("Chyby vstupních dat.");
+            vysledek = "Chyba vstupních dat.";
+            Displej.repaint();
+        } catch (ClassCastException ez) {
+            vysledek = "Chyba vstupních dat.";
+            Displej.repaint();
         }
     }//GEN-LAST:event_btnRovnaseActionPerformed
 
     private void btnSmazatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSmazatActionPerformed
-        if (txfVstup.getText().length() < 1) {
-            btnSmazat.disable();
-        } else {
-        }
-
         try {
-            txfVstup.setText(txfVstup.getText(0, txfVstup.getText().length() - 1));
-        } catch (BadLocationException ex) {
-            Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+            vstup = vstup.substring(0, vstup.length() - 1);
+            if ((zadani.charAt(zadani.length()-1)==zadani.charAt(zadani.length()-2))&&zadani.length()-1=='/'){
+                zadani = zadani.substring(0, zadani.length() - 2);
+                Displej.repaint();
+            } else {
+                zadani = zadani.substring(0, zadani.length() - 1);
+                Displej.repaint();
+            }
+                    
+        } catch (StringIndexOutOfBoundsException ex) {
+            vstup = "";
+            zadani = "";
+            Displej.repaint();
         }
     }//GEN-LAST:event_btnSmazatActionPerformed
 
     private void mUlozitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mUlozitActionPerformed
-        JFileChooser uloz = new JFileChooser();
-        int n = uloz.showOpenDialog(uloz);
-        Source.saveAsFile(uloz.getSelectedFile().toString(), txfVstup.getText() + " = " + txfVystup.getText());
+//        JFileChooser uloz = new JFileChooser();
+//        int n = uloz.showOpenDialog(uloz);
+//        Source.saveAsFile(uloz.getSelectedFile().toString(), txfVstup.getText() + " = " + txfVystup.getText());
     }//GEN-LAST:event_mUlozitActionPerformed
 
     private void mNacistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mNacistActionPerformed
-        JFileChooser nacti = new JFileChooser();
-        int n = nacti.showOpenDialog(nacti);
-        txfVstup.setText(Source.loadFile(nacti.getSelectedFile().toString()));
-        ArrayList input;
-        input = new ArrayList(Source.fillColection(txfVstup.getText()));
-
-        try {
-            if (Source.textControl(input)) {
-                if (Source.bracers(input)) {
-                    txfVystup.setText(Double.toString(BinOp.fromArrayList(input).evaluate()));
-                } else {
-                    txfVystup.setText("Chybná syntaxe, zkontroluj závorky.");
-                }
-            } else {
-                txfVystup.setText("V zadání je nepodporovaný znak.");
-            }
-        } catch (NumberFormatException ex) {
-            txfVystup.setText("Chyby vstupních dat, zkontroluj syntaxi.");
-        } catch (ArrayIndexOutOfBoundsException ey) {
-            txfVystup.setText("Chyby vstupních dat.");
-        }
+//        JFileChooser nacti = new JFileChooser();
+//        int n = nacti.showOpenDialog(nacti);
+//        txfVstup.setText(Source.loadFile(nacti.getSelectedFile().toString()));
+//        ArrayList input;
+//        input = new ArrayList(Source.fillColection(txfVstup.getText()));
+//
+//        try {
+//            if (Source.textControl(input)) {
+//                if (Source.bracers(input)) {
+//                    txfVystup.setText(Double.toString(BinOp.fromArrayList(input).evaluate()));
+//                } else {
+//                    txfVystup.setText("Chybná syntaxe, zkontroluj závorky.");
+//                }
+//            } else {
+//                txfVystup.setText("V zadání je nepodporovaný znak.");
+//            }
+//        } catch (NumberFormatException ex) {
+//            txfVystup.setText("Chyby vstupních dat, zkontroluj syntaxi.");
+//        } catch (ArrayIndexOutOfBoundsException ey) {
+//            txfVystup.setText("Chyby vstupních dat.");
+//        }
     }//GEN-LAST:event_mNacistActionPerformed
 
     private void mKonecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mKonecActionPerformed
@@ -527,9 +575,18 @@ public class MainGUI extends javax.swing.JFrame {
         Displej.repaint();
     }//GEN-LAST:event_DisplejScrollBarMouseReleased
 
-    /**
-     * @param args the command line arguments
-     */
+    private void btnZlomekNumAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZlomekNumAction
+        vstup += '/';
+        zadani += "//";
+        Displej.repaint();     
+    }//GEN-LAST:event_btnZlomekNumAction
+
+    private void btnTabulatorNumAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTabulatorNumAction
+        //vstup += '';
+        zadani += '\t';
+        Displej.repaint();
+    }//GEN-LAST:event_btnTabulatorNumAction
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -544,13 +601,13 @@ public class MainGUI extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Calc.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Calc.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Calc.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Calc.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -558,24 +615,23 @@ public class MainGUI extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new MainGUI().setVisible(true);
+                new Calc().setVisible(true);
             }
         });
 
     }
 
     public void kresli(Graphics g) {
-        Grafic a = new Symbols();
-        a.drawSource(zadani,poziceScrolu, Displej,DisplejScrollBar, g);
-        a.drawResult(vysledek,poziceScrolu, Displej,DisplejScrollBar, g);
-        
-        
-
+        Grafic a = new Symbols();    
+        a.drawSource(zadani, poziceScrolu, Displej, DisplejScrollBar, g, 0, 0);
+        a.drawResult(vysledek, poziceScrolu, Displej, DisplejScrollBar, g);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Displej;
     private javax.swing.JScrollBar DisplejScrollBar;
     private javax.swing.JMenu Menu;
+    private javax.swing.JPanel Operace;
+    private javax.swing.JPanel Panel;
     private javax.swing.JButton btn0;
     private javax.swing.JButton btn1;
     private javax.swing.JButton btn2;
@@ -596,14 +652,13 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnPlus;
     private javax.swing.JButton btnRovnase;
     private javax.swing.JButton btnSmazat;
+    private javax.swing.JButton btnTabulator;
     private javax.swing.JButton btnZavorkaL;
     private javax.swing.JButton btnZavorkaP;
+    private javax.swing.JButton btnZlomek;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JPanel jPanel;
     private javax.swing.JMenuItem mKonec;
     private javax.swing.JMenuItem mNacist;
     private javax.swing.JMenuItem mUlozit;
-    private javax.swing.JTextField txfVstup;
-    private javax.swing.JTextField txfVystup;
     // End of variables declaration//GEN-END:variables
 }

@@ -15,14 +15,12 @@ import javax.swing.JFileChooser;
  *
  * @author michalblazek
  */
-
-
 public class Calc extends javax.swing.JFrame {
+
     public String vstup = new String();
     public String zadani = new String();
     public String vysledek = new String();
-    public int poziceScrolu = 0;   
-    
+    public int poziceScrolu = 0;
 
     /**
      * Creates new form main
@@ -491,7 +489,11 @@ public class Calc extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCleanActionPerformed
 
     private void btnRovnaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRovnaseActionPerformed
+        if (zlomek && vstup.charAt(vstup.length() - 1) != ')') {
+            vstup += ')';
+        }
         ArrayList input;
+        System.out.println(vstup);
         input = new ArrayList(Source.fillColection(vstup));
         try {
             if (Source.textControl(input)) {
@@ -521,14 +523,14 @@ public class Calc extends javax.swing.JFrame {
     private void btnSmazatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSmazatActionPerformed
         try {
             vstup = vstup.substring(0, vstup.length() - 1);
-            if ((zadani.charAt(zadani.length()-1)==zadani.charAt(zadani.length()-2))&&zadani.length()-1=='/'){
+            if ((zadani.charAt(zadani.length() - 1) == zadani.charAt(zadani.length() - 2)) && zadani.length() - 1 == '/') {
                 zadani = zadani.substring(0, zadani.length() - 2);
                 Displej.repaint();
             } else {
                 zadani = zadani.substring(0, zadani.length() - 1);
                 Displej.repaint();
             }
-                    
+
         } catch (StringIndexOutOfBoundsException ex) {
             vstup = "";
             zadani = "";
@@ -574,16 +576,26 @@ public class Calc extends javax.swing.JFrame {
         poziceScrolu = DisplejScrollBar.getValue();
         Displej.repaint();
     }//GEN-LAST:event_DisplejScrollBarMouseReleased
-
+    boolean jmenovatel = false;
+    boolean zlomek = false;
     private void btnZlomekNumAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZlomekNumAction
-        vstup += '/';
+        zlomek = true;
         zadani += "//";
-        Displej.repaint();     
+        vstup += '(';
+        jmenovatel = true;
+        Displej.repaint();
     }//GEN-LAST:event_btnZlomekNumAction
 
     private void btnTabulatorNumAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTabulatorNumAction
         //vstup += '';
-        zadani += '\t';
+        if (jmenovatel) {
+            zadani += '\t';
+            vstup += ")/(";
+            jmenovatel = false;
+        } else {
+            zadani += '\t';
+            vstup += ")";
+        }
         Displej.repaint();
     }//GEN-LAST:event_btnTabulatorNumAction
 
@@ -622,7 +634,7 @@ public class Calc extends javax.swing.JFrame {
     }
 
     public void kresli(Graphics g) {
-        Grafic a = new Symbols();    
+        Grafic a = new Grafic();
         a.drawSource(zadani, poziceScrolu, Displej, DisplejScrollBar, g, 0, 0);
         a.drawResult(vysledek, poziceScrolu, Displej, DisplejScrollBar, g);
     }

@@ -4,10 +4,6 @@
  */
 package GUI;
 
-import Math.*;
-import System.Source;
-import java.util.ArrayList;
-
 /**
  *
  * @author michalblazek
@@ -15,11 +11,16 @@ import java.util.ArrayList;
 public class testovani {
 
     public static void main(String[] args) {
-        String s = "2+3^2";
-        ArrayList<Object> list = Source.fillColection(s);
-        Expr e = BinOp.fromArrayList(list);
-        System.out.println(e + " = " + e.evaluate());
-
-
+        int i = 3;
+        switch (i) {
+            case 1:
+                System.out.println("1");
+                break;
+            case 3:
+                System.out.println("3");
+                break;
+            default:
+                System.out.println("ahoj");
+        }
     }
 }

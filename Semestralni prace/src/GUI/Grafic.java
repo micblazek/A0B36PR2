@@ -198,6 +198,8 @@ public class Grafic {
         int y = panel.getHeight() - 10;
         if (bar.isVisible()) {
             y -= 15;
+            
+            System.out.println("");
         }
         g.drawString(result, x, y);
     }

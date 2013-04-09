@@ -43,31 +43,24 @@ public class Grafic {
             switch (list.get(i).toString().charAt(0)) {
                 case '/': {
                     if (citatel.length() > 0) {
-                        if ((citatel.charAt(0) == '(') && (jmen == false)) {
-                            System.out.print("1");
-                            x -= citatel.toString().length() * sirkaZnaku;
-                            g.clearRect(x, y - vyskaZnaku, citatel.toString().length() * sirkaZnaku, vyskaZnaku + 3);
-                            g.drawString(citatel, x-(list.toString().length()*Scrol)/10, y - (vyskaZnaku / 2));
-                        } else {
-                            System.out.print("2");
-                            x -= list.get(i - 1).toString().length() * sirkaZnaku;
-                            g.clearRect(x, y - vyskaZnaku, list.get(i - 1).toString().length() * sirkaZnaku, vyskaZnaku);
-                            g.drawString(list.get(i - 1).toString(), x-(list.toString().length()*Scrol)/10, y - (vyskaZnaku / 2));
-                        }
+                        x -= posunSouradnic(citatel, sirkaZnaku);
+                        g.clearRect(x, y - vyskaZnaku, citatel.toString().length() * sirkaZnaku, vyskaZnaku + 3);
+                        g.drawString(citatel, x - (list.toString().length() * Scrol) / 10, y - (vyskaZnaku / 2));
                     } else {
-                        System.out.print("3");
-                        x -= list.get(i - 1).toString().length() * sirkaZnaku;
+                        x -= posunSouradnic(list.get(i - 1), sirkaZnaku);
                         g.clearRect(x, y - vyskaZnaku, list.get(i - 1).toString().length() * sirkaZnaku, vyskaZnaku);
-                        g.drawString(list.get(i - 1).toString(), x-(list.toString().length()*Scrol)/10, y - (vyskaZnaku / 2));
+                        g.drawString(list.get(i - 1).toString(), x - (list.toString().length() * Scrol) / 10, y - (vyskaZnaku / 2));
                     }
-                    System.out.print("4");
+                    cit = true;
                     jmen = true;
                     y += vyskaZnaku / 2;
                     break;
                 }
                 case ')': {
-                    g.drawString(list.get(i).toString(), x-(list.toString().length()*Scrol)/10, y);
-                    x += list.get(i).toString().length() * sirkaZnaku;
+                    if(jmen==true){
+                    //Pokud je citatel výcemístný a ozávorkovaný, bude vložen do stringu citatel.
+                    g.drawString(list.get(i).toString(), x - (list.toString().length() * Scrol) / 10, y);
+                    x += posunSouradnic(list.get(i), sirkaZnaku);
                     int j = i;
                     while (list.get(j).toString().charAt(0) != '(') {
                         citatel = list.get(j).toString() + citatel.toString();
@@ -75,45 +68,47 @@ public class Grafic {
                     }
                     citatel = '(' + citatel.toString();
                     break;
+                    }
+                   
                 }
                 default: {
                     if (jmen) {
-                        System.out.print("6");
-                        if (citatel.length() > 0 && citatel.length() > list.get(i).toString().length()) {
-                            System.out.println(list.get(i - 2).toString());
-                            g.drawString(list.get(i).toString(), x + citatel.length() * sirkaZnaku / 2 - list.get(i).toString().length() * sirkaZnaku / 2-(list.toString().length()*Scrol)/10, y);
-                            System.out.println("x");
-                        } else {
-                            if (citatel.length() <= list.get(i).toString().length() && citatel.length() != 0) {
-                                g.clearRect(x, y - vyskaZnaku * 2, citatel.length() * sirkaZnaku, vyskaZnaku + 3);
-                                g.drawString(citatel, x + list.get(i).toString().length() * sirkaZnaku / 2 - citatel.length() * sirkaZnaku / 2-(list.toString().length()*Scrol)/10, y - vyskaZnaku);
-                                g.drawString(list.get(i).toString(), x-(list.toString().length()*Scrol)/10, y);
-                                System.out.println("z");
+                        if (citatel.length() > 0) {
+                            if (citatel.length() > list.get(i).toString().length()) {
+                                //posune jmenovatel na střed pokud je menší než čitatel (ozávorkovaný)
+                                g.drawString(list.get(i).toString(), x + citatel.length() * sirkaZnaku / 2 - list.get(i).toString().length() * sirkaZnaku / 2 - (list.toString().length() * Scrol) / 10, y);
+                                x += posunSouradnic(citatel, sirkaZnaku) - (list.toString().length() * Scrol);
                             } else {
-                                if (list.get(i - 2).toString().length() < list.get(i).toString().length()) {
-                                    g.clearRect(x, y - vyskaZnaku * 2, list.get(i - 2).toString().length() * sirkaZnaku, vyskaZnaku);
-                                    g.drawString(list.get(i - 2).toString(), x + list.get(i).toString().length() * sirkaZnaku / 2 - list.get(i - 2).toString().length() * sirkaZnaku / 2-(list.toString().length()*Scrol)/10, y - vyskaZnaku);
-                                    g.drawString(list.get(i).toString(), x-(list.toString().length()*Scrol)/10, y);
-                                    System.out.println("d");
-                                } else {
-                                    g.drawString(list.get(i).toString(), x + list.get(i - 2).toString().length() * sirkaZnaku / 2 - list.get(i).toString().length() * sirkaZnaku / 2 -(list.toString().length()*Scrol)/10, y);
-                                    System.out.println("y");
-                                }
+                                //posune čitatel (ozávorkovaný) na střed pokud je menší než jmenovatel
+                                g.clearRect(x, y - vyskaZnaku * 2 + 2, citatel.length() * sirkaZnaku, vyskaZnaku);
+                                g.drawString(citatel, x + list.get(i).toString().length() * sirkaZnaku / 2 - citatel.length() * sirkaZnaku / 2 - (list.toString().length() * Scrol) / 10, y - vyskaZnaku);
+                                g.drawString(list.get(i).toString(), x - (list.toString().length() * Scrol) / 10, y);
+                                x += posunSouradnic(list.get(i), sirkaZnaku) - (list.toString().length() * Scrol);
+                            }
+                        } else {
+                            if (list.get(i - 2).toString().length() < list.get(i).toString().length()) {
+                                //posune čitatel (ozávorkovaný) na střed pokud je menší než jmenovatel
+                                g.clearRect(x, y - vyskaZnaku * 2, list.get(i - 2).toString().length() * sirkaZnaku, vyskaZnaku);
+                                g.drawString(list.get(i - 2).toString(), x + list.get(i).toString().length() * sirkaZnaku / 2 - list.get(i - 2).toString().length() * sirkaZnaku / 2 - (list.toString().length() * Scrol) / 10, y - vyskaZnaku);
+                                g.drawString(list.get(i).toString(), x - (list.toString().length() * Scrol) / 10, y);
+                                x += posunSouradnic(list.get(i), sirkaZnaku) - (list.toString().length() * Scrol);
+                            } else {
+                                //posune jmenovatel na střed pokud je menší než čitatel
+                                g.drawString(list.get(i).toString(), x + list.get(i - 2).toString().length() * sirkaZnaku / 2 - list.get(i).toString().length() * sirkaZnaku / 2 - (list.toString().length() * Scrol) / 10, y);
+                                x += posunSouradnic(list.get(i - 2), sirkaZnaku) - (list.toString().length() * Scrol);
                             }
                         }
                         y -= vyskaZnaku / 2;
-                        x += list.get(i).toString().length() * sirkaZnaku;
                         jmen = false;
-                        citatel = "";
                     } else {
-                        System.out.print("7");
-                        g.drawString(list.get(i).toString(), x-(list.toString().length()*Scrol)/10, y);
-                        x += list.get(i).toString().length() * sirkaZnaku;
+                        g.drawString(list.get(i).toString(), x - (list.toString().length() * Scrol) / 10, y);
+                        x += posunSouradnic(list.get(i), sirkaZnaku) - (list.toString().length() * Scrol);
                     }
+                    citatel = "";
                 }
             }
-            if ((panel.getWidth() - 20) < x+list.get(i).toString().length()*sirkaZnaku) {
-                bar.setVisible(true);               
+            if ((panel.getWidth() - 20) < x + list.get(i).toString().length() * sirkaZnaku) {
+                bar.setVisible(true);
             } else {
                 bar.setVisible(false);
             }
@@ -128,5 +123,9 @@ public class Grafic {
             y -= 15;
         }
         g.drawString(result, x, y);
+    }
+
+    private int posunSouradnic(Object o, int sirka) {
+        return o.toString().length() * sirka;
     }
 }

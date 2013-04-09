@@ -18,7 +18,7 @@ import javax.swing.JFileChooser;
 public class Calc extends javax.swing.JFrame {
 
     public String vstup = new String();
-    public String zadani = new String();
+    //public String zadani = new String();
     public String vysledek = new String();
     public int poziceScrolu = 0;
 
@@ -71,6 +71,7 @@ public class Calc extends javax.swing.JFrame {
             }
         };
         DisplejScrollBar = new javax.swing.JScrollBar();
+        txtVstup = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         Menu = new javax.swing.JMenu();
         mNacist = new javax.swing.JMenuItem();
@@ -353,6 +354,17 @@ public class Calc extends javax.swing.JFrame {
 
         DisplejScrollBar.getAccessibleContext().setAccessibleDescription("");
 
+        txtVstup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtVstupActionPerformed(evt);
+            }
+        });
+        txtVstup.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtVstupKeyReleased(evt);
+            }
+        });
+
         Menu.setText("Soubor");
 
         mNacist.setText("Načíst data...");
@@ -429,15 +441,18 @@ public class Calc extends javax.swing.JFrame {
                         .add(Operace, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(Panel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(Displej, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(Displej, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(txtVstup))
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(Displej, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(txtVstup, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(Displej, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(18, 18, 18)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(layout.createSequentialGroup()
                         .add(2, 2, 2)
@@ -477,14 +492,16 @@ public class Calc extends javax.swing.JFrame {
 
     private void NumAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NumAction
         vstup += evt.getActionCommand();
-        zadani += evt.getActionCommand();
+        //zadani += evt.getActionCommand();       
+        txtVstup.setText(vstup);
         Displej.repaint();
     }//GEN-LAST:event_NumAction
 
     private void btnCleanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCleanActionPerformed
         vstup = "";
-        zadani = "";
+        //zadani = "";
         vysledek = "";
+        txtVstup.setText(vstup);
         Displej.repaint();
     }//GEN-LAST:event_btnCleanActionPerformed
 
@@ -493,7 +510,6 @@ public class Calc extends javax.swing.JFrame {
             vstup += ')';
         }
         ArrayList input;
-        System.out.println(vstup);
         input = new ArrayList(Source.fillColection(vstup));
         try {
             if (Source.textControl(input)) {
@@ -523,17 +539,20 @@ public class Calc extends javax.swing.JFrame {
     private void btnSmazatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSmazatActionPerformed
         try {
             vstup = vstup.substring(0, vstup.length() - 1);
-            if ((zadani.charAt(zadani.length() - 1) == zadani.charAt(zadani.length() - 2)) && zadani.length() - 1 == '/') {
-                zadani = zadani.substring(0, zadani.length() - 2);
-                Displej.repaint();
-            } else {
-                zadani = zadani.substring(0, zadani.length() - 1);
-                Displej.repaint();
-            }
+            txtVstup.setText(vstup);
+            Displej.repaint();
+//            if ((zadani.charAt(zadani.length() - 1) == zadani.charAt(zadani.length() - 2)) && zadani.length() - 1 == '/') {
+//                zadani = zadani.substring(0, zadani.length() - 2);
+//                Displej.repaint();
+//            } else {
+//                zadani = zadani.substring(0, zadani.length() - 1);
+//                Displej.repaint();
+//            }
 
         } catch (StringIndexOutOfBoundsException ex) {
             vstup = "";
-            zadani = "";
+            txtVstup.setText(vstup);
+           // zadani = "";
             Displej.repaint();
         }
     }//GEN-LAST:event_btnSmazatActionPerformed
@@ -580,8 +599,9 @@ public class Calc extends javax.swing.JFrame {
     boolean zlomek = false;
     private void btnZlomekNumAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZlomekNumAction
         zlomek = true;
-        zadani += "//";
+       // zadani += "//";
         vstup += '(';
+        txtVstup.setText(vstup);
         jmenovatel = true;
         Displej.repaint();
     }//GEN-LAST:event_btnZlomekNumAction
@@ -589,15 +609,29 @@ public class Calc extends javax.swing.JFrame {
     private void btnTabulatorNumAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTabulatorNumAction
         //vstup += '';
         if (jmenovatel) {
-            zadani += '\t';
+            //zadani += '\t';
             vstup += ")/(";
+            txtVstup.setText(vstup);
             jmenovatel = false;
         } else {
-            zadani += '\t';
+            //zadani += '\t';
             vstup += ")";
+            txtVstup.setText(vstup);
         }
         Displej.repaint();
     }//GEN-LAST:event_btnTabulatorNumAction
+
+    private void txtVstupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtVstupActionPerformed
+        vstup = txtVstup.getText();
+        //zadani = vstup;
+        Displej.repaint();
+    }//GEN-LAST:event_txtVstupActionPerformed
+
+    private void txtVstupKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtVstupKeyReleased
+        vstup = txtVstup.getText();
+        //zadani = vstup;
+        Displej.repaint();
+    }//GEN-LAST:event_txtVstupKeyReleased
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -635,7 +669,7 @@ public class Calc extends javax.swing.JFrame {
 
     public void kresli(Graphics g) {
         Grafic a = new Grafic();
-        a.drawSource(zadani, poziceScrolu, Displej, DisplejScrollBar, g, 0, 0);
+        a.drawSource(vstup, poziceScrolu, Displej, DisplejScrollBar, g);
         a.drawResult(vysledek, poziceScrolu, Displej, DisplejScrollBar, g);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -672,5 +706,6 @@ public class Calc extends javax.swing.JFrame {
     private javax.swing.JMenuItem mKonec;
     private javax.swing.JMenuItem mNacist;
     private javax.swing.JMenuItem mUlozit;
+    private javax.swing.JTextField txtVstup;
     // End of variables declaration//GEN-END:variables
 }

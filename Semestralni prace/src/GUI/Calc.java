@@ -61,9 +61,6 @@ public class Calc extends javax.swing.JFrame {
         btnZavorkaP = new javax.swing.JButton();
         btnOdmocnina = new javax.swing.JButton();
         btnMinus = new javax.swing.JButton();
-        Panel = new javax.swing.JPanel();
-        btnZlomek = new javax.swing.JButton();
-        btnTabulator = new javax.swing.JButton();
         Displej = new javax.swing.JPanel(){
             public void paint(Graphics g){
                 super.paint(g);
@@ -288,45 +285,6 @@ public class Calc extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        Panel.setBackground(new java.awt.Color(204, 204, 204));
-        Panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        btnZlomek.setText("Zlomek");
-        btnZlomek.setActionCommand("^");
-        btnZlomek.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnZlomekNumAction(evt);
-            }
-        });
-
-        btnTabulator.setText("Tabulator");
-        btnTabulator.setActionCommand("^");
-        btnTabulator.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTabulatorNumAction(evt);
-            }
-        });
-
-        org.jdesktop.layout.GroupLayout PanelLayout = new org.jdesktop.layout.GroupLayout(Panel);
-        Panel.setLayout(PanelLayout);
-        PanelLayout.setHorizontalGroup(
-            PanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(PanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(PanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(btnZlomek, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(btnTabulator, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(16, Short.MAX_VALUE))
-        );
-        PanelLayout.setVerticalGroup(
-            PanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(PanelLayout.createSequentialGroup()
-                .add(btnZlomek)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(btnTabulator)
-                .add(0, 0, Short.MAX_VALUE))
-        );
-
         Displej.setBackground(new java.awt.Color(255, 255, 255));
         Displej.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         Displej.setFocusCycleRoot(true);
@@ -438,9 +396,7 @@ public class Calc extends javax.swing.JFrame {
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(btnClean, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(Operace, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(Panel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(Operace, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(Displej, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(txtVstup))
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -453,7 +409,7 @@ public class Calc extends javax.swing.JFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(Displej, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(18, 18, 18)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
                         .add(2, 2, 2)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
@@ -479,8 +435,7 @@ public class Calc extends javax.swing.JFrame {
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(btnClean)
                             .add(btnRovnase)))
-                    .add(Operace, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 171, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, Panel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(Operace, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 171, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .add(14, 14, 14))
         );
 
@@ -597,30 +552,6 @@ public class Calc extends javax.swing.JFrame {
     }//GEN-LAST:event_DisplejScrollBarMouseReleased
     boolean jmenovatel = false;
     boolean zlomek = false;
-    private void btnZlomekNumAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZlomekNumAction
-        zlomek = true;
-       // zadani += "//";
-        vstup += '(';
-        txtVstup.setText(vstup);
-        jmenovatel = true;
-        Displej.repaint();
-    }//GEN-LAST:event_btnZlomekNumAction
-
-    private void btnTabulatorNumAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTabulatorNumAction
-        //vstup += '';
-        if (jmenovatel) {
-            //zadani += '\t';
-            vstup += ")/(";
-            txtVstup.setText(vstup);
-            jmenovatel = false;
-        } else {
-            //zadani += '\t';
-            vstup += ")";
-            txtVstup.setText(vstup);
-        }
-        Displej.repaint();
-    }//GEN-LAST:event_btnTabulatorNumAction
-
     private void txtVstupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtVstupActionPerformed
         vstup = txtVstup.getText();
         //zadani = vstup;
@@ -677,7 +608,6 @@ public class Calc extends javax.swing.JFrame {
     private javax.swing.JScrollBar DisplejScrollBar;
     private javax.swing.JMenu Menu;
     private javax.swing.JPanel Operace;
-    private javax.swing.JPanel Panel;
     private javax.swing.JButton btn0;
     private javax.swing.JButton btn1;
     private javax.swing.JButton btn2;
@@ -698,10 +628,8 @@ public class Calc extends javax.swing.JFrame {
     private javax.swing.JButton btnPlus;
     private javax.swing.JButton btnRovnase;
     private javax.swing.JButton btnSmazat;
-    private javax.swing.JButton btnTabulator;
     private javax.swing.JButton btnZavorkaL;
     private javax.swing.JButton btnZavorkaP;
-    private javax.swing.JButton btnZlomek;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem mKonec;
     private javax.swing.JMenuItem mNacist;

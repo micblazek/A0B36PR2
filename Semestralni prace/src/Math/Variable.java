@@ -13,6 +13,8 @@ public class Variable extends Expr {
     public char name;
     public double value;
 
+    public Variable() {
+    }
     public Variable(char name, double value) {
         this.name = name;
         this.value = value;

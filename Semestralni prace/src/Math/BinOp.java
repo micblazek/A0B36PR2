@@ -4,6 +4,7 @@
  */
 package Math;
 
+import GUI.DisplejNumber;
 import java.util.ArrayList;
 
 /**
@@ -185,11 +186,11 @@ public class BinOp extends Expr {
 
     @Override
     public String toString() {
-        return c1.toString() + operand  + c2.toString();
+        return c1.toString() + operand + c2.toString();
     }
 
     public static Expr fromArrayList(ArrayList List) throws ArrayIndexOutOfBoundsException {
-        if (List.size()==1 && List.get(0).getClass()==BinOp.class){
+        if (List.size() == 1 && List.get(0).getClass() == BinOp.class) {
             return (Expr) List.get(0);
         }
 
@@ -210,9 +211,9 @@ public class BinOp extends Expr {
             List.remove(0);
             List.remove(1); // odepbere se index 0, to co bylo index 1 je 0, 2 je 1
         }
-        if ((List.get(0).toString().charAt(0) == '+') && List.get(0).toString().length() == 1) {           
-            List.remove(0);          
-        }      
+        if ((List.get(0).toString().charAt(0) == '+') && List.get(0).toString().length() == 1) {
+            List.remove(0);
+        }
         // Převede čísla v řetězci na konstanty.
         for (int i = 0; i < List.size(); i++) {
             if (Character.isDigit(List.get(i).toString().charAt(0)) && List.get(i).getClass().equals(Constant.class) == false) {
@@ -287,5 +288,111 @@ public class BinOp extends Expr {
             }
         }
         return new Bracers('(', (Expr) List.get(0), ')');
+    }
+
+    public ArrayList<DisplejNumber> ohodnot() {
+        int hloubka = this.hloubkaBinOps();
+        int delka = this.delkaBinOps();
+        ArrayList<Character> postupX = new ArrayList<Character>();
+        ArrayList<Character> postupY = new ArrayList<Character>();
+        return this.ohodnot(postupX, delka, postupY, hloubka);
+    }
+
+    private ArrayList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
+        ArrayList<DisplejNumber> list = new ArrayList<DisplejNumber>();
+
+        if (this.operand == '/') {
+            /* 
+             * Vytváření zlomku = posun Y souřadnice
+             * Přidá operand dělení mezi čitatele a jmenovatele
+             */
+            list.add(new DisplejNumber(Character.toString(this.operand), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
+            /*
+             * Vytváření čitatele
+             */
+            if (this.c1.getClass().equals(new BinOp().getClass())) {
+                //Když je čitatel další operace, bude rekurzivně zavolaná tatáž metoda
+                postupY.add('+');
+                list.addAll(((BinOp) this.c1).ohodnot(postupX, delka, postupY, hloubka));
+            } else {
+                //Když čitatel není operace přiřadí mu souřednice Y o 1 vyší než operandu dělení
+                postupY.add('+');
+                list.add(new DisplejNumber(this.c1.toString(), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
+            }
+            postupY.remove(postupY.size() - 1);
+            /*
+             * Vytváření jmenovatele
+             */
+            if (this.c2.getClass().equals(new BinOp().getClass())) {
+                //Když je jmenovatel další operace, bude rekurzivně zavolaná tatáž metoda
+                postupY.add('-');
+                list.addAll(((BinOp) this.c2).ohodnot(postupX, delka, postupY, hloubka));
+            } else {
+                //Když jmenovatel není operace přiřadí mu souřednice Y o 1 vyší než operandu dělení
+                postupY.add('-');
+                list.add(new DisplejNumber(this.c2.toString(), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
+            }
+            postupY.remove(postupY.size() - 1);
+        } else {
+            /*
+             * Vytváření souřadnic pro +, -, * a mocninu
+             */
+            list.add(new DisplejNumber(Character.toString(this.operand), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
+            /*
+             * Vytváření souřadnic nalevo od operátoru
+             */
+            if (this.c1.getClass().equals(new BinOp().getClass())) {
+                // Když je číslo nalevo od znaménka operace, bude rekurzivně zavolaná tatáž metoda
+                postupX.add('-');
+                list.addAll(((BinOp) this.c1).ohodnot(postupX, delka, postupY, hloubka));
+            } else {
+                //Když číslo nalevo od znaménka není operace přiřadí mu souřednice X o 1 menší než operandu 
+                postupX.add('-');
+                list.add(new DisplejNumber(this.c1.toString(), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
+            }
+            postupX.remove(postupX.size() - 1);
+            /*
+             * Vytváření souřadnic napravo od operátoru
+             */
+            if (this.c2.getClass().equals(new BinOp().getClass())) {
+                //Když je jmenovatel další operace, bude rekurzivně zavolaná tatáž metoda
+                postupX.add('+');
+                list.addAll(((BinOp) this.c2).ohodnot(postupX, delka, postupY, hloubka));
+            } else {
+                //Když jmenovatel není operace přiřadí mu souřednice Y o 1 vyší než operandu dělení
+                postupX.add('+');
+                list.add(new DisplejNumber(this.c2.toString(), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
+            }
+            postupX.remove(postupX.size() - 1);
+        }
+        return list;
+    }
+
+    private static int yGeometrickaRada(int hloubka, ArrayList<Character> prubeh) {
+        int g = 0;
+        hloubka--;
+        for (int i = 0; i < prubeh.size(); i++) {
+            if (prubeh.get(i) == '+' || prubeh.get(i) == '-') {
+                g += Double.valueOf(prubeh.get(i) + Double.toString(Math.pow(2, hloubka)));
+                hloubka--;
+            } else {
+                break;
+            }
+        }
+        return g;
+    }
+
+    private static int xGeometrickaRada(int delka, ArrayList<Character> prubeh) {
+        int g = 0;
+        delka--;
+        for (int i = 0; i < prubeh.size(); i++) {
+            if (prubeh.get(i) == '+' || prubeh.get(i) == '-') {
+                g += Double.valueOf(prubeh.get(i) + Double.toString(Math.pow(2, delka)));
+                delka--;
+            } else {
+                break;
+            }
+        }
+        return g;
     }
 }

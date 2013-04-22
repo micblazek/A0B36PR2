@@ -3,6 +3,10 @@
  * and open the template in the editor.
  */
 package Math;
+
+import GUI.DisplejNumber;
+import java.util.ArrayList;
+
 /**
  *
  * @author michalblazek
@@ -40,6 +44,14 @@ public class Bracers extends Expr{
     public String toString() {
         return b1+value.toString()+b2;
     }
+    @Override
+    public ArrayList<DisplejNumber> ohodnot() {
+        return ((BinOp)this.value).ohodnot();
+    }
     
+    @Override
+    public ArrayList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
+        return ((BinOp)this.value).ohodnot(postupX, delka, postupY, hloubka);
+    }
     
 }

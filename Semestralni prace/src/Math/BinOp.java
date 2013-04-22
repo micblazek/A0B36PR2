@@ -4,6 +4,7 @@
  */
 package Math;
 
+import GUI.DisplejFraction;
 import GUI.DisplejNumber;
 import java.util.ArrayList;
 
@@ -281,15 +282,24 @@ public class BinOp extends Expr {
 
         for (int i = 0; i < List.size(); i++) {
             if (List.get(i).getClass() == "".getClass()) {
-                List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), (Expr) List.get(i + 1)));
-                List.remove(i + 1);
-                List.remove(i - 1);
-                i--;
+                //try {
+                    List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), (Expr) List.get(i + 1)));
+                    List.remove(i + 1);
+                    List.remove(i - 1);
+                    i--;
+//                } catch (IndexOutOfBoundsException e) {
+//                    // pro pasní hodnot realtime
+//                    List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new Constant(Integer.valueOf(0))));
+//                    List.remove(i - 1);
+//                    i--;
+//                }
+
             }
         }
         return new Bracers('(', (Expr) List.get(0), ')');
     }
 
+    @Override
     public ArrayList<DisplejNumber> ohodnot() {
         int hloubka = this.hloubkaBinOps();
         int delka = this.delkaBinOps();
@@ -298,7 +308,8 @@ public class BinOp extends Expr {
         return this.ohodnot(postupX, delka, postupY, hloubka);
     }
 
-    private ArrayList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
+    @Override
+    public ArrayList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
         ArrayList<DisplejNumber> list = new ArrayList<DisplejNumber>();
 
         if (this.operand == '/') {
@@ -306,14 +317,25 @@ public class BinOp extends Expr {
              * Vytváření zlomku = posun Y souřadnice
              * Přidá operand dělení mezi čitatele a jmenovatele
              */
-            list.add(new DisplejNumber(Character.toString(this.operand), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
+            //list.add(new DisplejNumber(Character.toString(this.operand), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
+            int delkaZlomkoveCary = 1;
+            if(this.c1.delkaBinOps()>this.c2.delkaBinOps()){
+                delkaZlomkoveCary = this.c1.delkaBinOps();
+            }else{
+                delkaZlomkoveCary = this.c2.delkaBinOps();
+            }
+            list.add(new DisplejFraction(Character.toString(this.operand), xGeometrickaRada(delka, postupX),yGeometrickaRada(hloubka, postupY), delkaZlomkoveCary));
             /*
              * Vytváření čitatele
              */
-            if (this.c1.getClass().equals(new BinOp().getClass())) {
-                //Když je čitatel další operace, bude rekurzivně zavolaná tatáž metoda
+            if (this.c1.getClass().equals(new BinOp().getClass()) || (this.c1.getClass().equals(new Bracers().getClass()))) {
                 postupY.add('+');
-                list.addAll(((BinOp) this.c1).ohodnot(postupX, delka, postupY, hloubka));
+                if (this.c1.getClass().equals(new BinOp().getClass())) {
+                    //Když je čitatel další operace, bude rekurzivně zavolaná tatáž metoda
+                    list.addAll(((BinOp) this.c1).ohodnot(postupX, delka, postupY, hloubka));
+                } else {
+                    list.addAll(((Bracers) this.c1).ohodnot(postupX, delka, postupY, hloubka));
+                }
             } else {
                 //Když čitatel není operace přiřadí mu souřednice Y o 1 vyší než operandu dělení
                 postupY.add('+');
@@ -323,10 +345,14 @@ public class BinOp extends Expr {
             /*
              * Vytváření jmenovatele
              */
-            if (this.c2.getClass().equals(new BinOp().getClass())) {
-                //Když je jmenovatel další operace, bude rekurzivně zavolaná tatáž metoda
+            if (this.c2.getClass().equals(new BinOp().getClass()) || (this.c2.getClass().equals(new Bracers().getClass()))) {
                 postupY.add('-');
-                list.addAll(((BinOp) this.c2).ohodnot(postupX, delka, postupY, hloubka));
+                if (this.c2.getClass().equals(new BinOp().getClass())) {
+                    //Když je jmenovatel další operace, bude rekurzivně zavolaná tatáž metoda
+                    list.addAll(((BinOp) this.c2).ohodnot(postupX, delka, postupY, hloubka));
+                } else {
+                    list.addAll(((Bracers) this.c2).ohodnot(postupX, delka, postupY, hloubka));
+                }
             } else {
                 //Když jmenovatel není operace přiřadí mu souřednice Y o 1 vyší než operandu dělení
                 postupY.add('-');
@@ -341,10 +367,14 @@ public class BinOp extends Expr {
             /*
              * Vytváření souřadnic nalevo od operátoru
              */
-            if (this.c1.getClass().equals(new BinOp().getClass())) {
-                // Když je číslo nalevo od znaménka operace, bude rekurzivně zavolaná tatáž metoda
+            if (this.c1.getClass().equals(new BinOp().getClass()) || (this.c1.getClass().equals(new Bracers().getClass()))) {
                 postupX.add('-');
-                list.addAll(((BinOp) this.c1).ohodnot(postupX, delka, postupY, hloubka));
+                if (this.c1.getClass().equals(new BinOp().getClass())) {
+                    // Když je číslo nalevo od znaménka operace, bude rekurzivně zavolaná tatáž metoda
+                    list.addAll(((BinOp) this.c1).ohodnot(postupX, delka, postupY, hloubka));
+                } else {
+                    list.addAll(((Bracers) this.c1).ohodnot(postupX, delka, postupY, hloubka));
+                }
             } else {
                 //Když číslo nalevo od znaménka není operace přiřadí mu souřednice X o 1 menší než operandu 
                 postupX.add('-');
@@ -354,10 +384,14 @@ public class BinOp extends Expr {
             /*
              * Vytváření souřadnic napravo od operátoru
              */
-            if (this.c2.getClass().equals(new BinOp().getClass())) {
-                //Když je jmenovatel další operace, bude rekurzivně zavolaná tatáž metoda
+            if (this.c2.getClass().equals(new BinOp().getClass()) || (this.c2.getClass().equals(new Bracers().getClass()))) {
                 postupX.add('+');
-                list.addAll(((BinOp) this.c2).ohodnot(postupX, delka, postupY, hloubka));
+                if (this.c2.getClass().equals(new BinOp().getClass())) {
+                    //Když je jmenovatel další operace, bude rekurzivně zavolaná tatáž metoda
+                    list.addAll(((BinOp) this.c2).ohodnot(postupX, delka, postupY, hloubka));
+                } else {
+                    list.addAll(((Bracers) this.c2).ohodnot(postupX, delka, postupY, hloubka));
+                }
             } else {
                 //Když jmenovatel není operace přiřadí mu souřednice Y o 1 vyší než operandu dělení
                 postupX.add('+');

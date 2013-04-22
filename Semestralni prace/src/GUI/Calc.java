@@ -79,7 +79,6 @@ public class Calc extends javax.swing.JFrame {
         setTitle("Racionální kalkulačka");
         setAlwaysOnTop(true);
         setLocationByPlatform(true);
-        setResizable(false);
 
         btn0.setText("0");
         btn0.addActionListener(new java.awt.event.ActionListener() {
@@ -407,7 +406,7 @@ public class Calc extends javax.swing.JFrame {
                 .addContainerGap()
                 .add(txtVstup, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(Displej, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(Displej, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(18, 18, 18)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
@@ -438,6 +437,8 @@ public class Calc extends javax.swing.JFrame {
                     .add(Operace, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 171, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .add(14, 14, 14))
         );
+
+        Displej.getAccessibleContext().setAccessibleName("");
 
         getAccessibleContext().setAccessibleName("Kalkulačka");
         getAccessibleContext().setAccessibleDescription("Já to spočítám !!!");

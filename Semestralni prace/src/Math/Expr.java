@@ -1,5 +1,8 @@
 package Math;
 
+import GUI.DisplejNumber;
+import java.util.ArrayList;
+
 public abstract class Expr {
 
     public abstract double evaluate();
@@ -30,6 +33,9 @@ public abstract class Expr {
                 return ((BinOp) this).c2.hloubkaBinOps(zanoreni);
             }
         }
+        if(this.getClass().equals(new Bracers().getClass())){
+            return ((Bracers) this).value.hloubkaBinOps(zanoreni);
+        }
         return zanoreni;
     }
     
@@ -40,7 +46,11 @@ public abstract class Expr {
 
     private int delkaBinOps(int pocitadlo) {
         int delka = pocitadlo;
-
+            
+        if (this.getClass().equals(new Bracers().getClass())) {
+            //delka+=2;
+            return ((Bracers) this).value.delkaBinOps(delka);
+        }
         if (this.getClass().equals(new BinOp().getClass())) {
             if (((BinOp) this).operand == '+' || ((BinOp) this).operand == '-' || ((BinOp) this).operand == '*' || ((BinOp) this).operand == '^') {
                 delka++;
@@ -57,39 +67,8 @@ public abstract class Expr {
         }
         return delka;
     }
-
-    public int xPredchoziDelka() {
-        return xPredchoziDelka(0);
-    }
     
-    public int xPredchoziDelka(int offset) {
-        if (this.getClass().equals(new Constant().getClass())) {
-            return Double.toString(((Constant)this).constant).length();
-        }
-
-        if (this.getClass().equals(new BinOp().getClass())) {
-                if (((BinOp) this).operand == '/') {
-                    if (((BinOp) this).c1.xPredchoziDelka(offset) > ((BinOp) this).c2.xPredchoziDelka(offset)) {
-                        return ((BinOp) this).c1.xPredchoziDelka(offset);
-                    } else {
-                        return ((BinOp) this).c2.xPredchoziDelka(offset);
-                    }
-                } else {
-                    if (((BinOp) this).c1.getClass().equals(new Constant().getClass()) && ((BinOp) this).c2.getClass().equals(new Constant().getClass())) {
-                        return ((BinOp) this).c1.toString().length() + ((BinOp) this).c2.toString().length() + 1 + offset;
-                    }
-                    if (((BinOp) this).c1.getClass().equals(new BinOp().getClass()) && ((BinOp) this).c2.getClass().equals(new BinOp().getClass())) {              
-                        return ((BinOp) this).c1.xPredchoziDelka(offset) + ((BinOp) this).c2.xPredchoziDelka(offset) + 1;
-                    }
-                    if (((BinOp) this).c1.getClass().equals(new BinOp().getClass()) && ((BinOp) this).c2.getClass().equals(new Constant().getClass())) {
-                        return ((BinOp) this).c1.xPredchoziDelka(offset) + ((BinOp) this).c2.toString().length() + 1;
-                    }
-                    if (((BinOp) this).c1.getClass().equals(new Constant().getClass()) && ((BinOp) this).c2.getClass().equals(new BinOp().getClass())) {
-                        
-                        return ((BinOp) this).c1.toString().length() + ((BinOp) this).c2.xPredchoziDelka(offset)+ 1;
-                    }
-                }      
-        }
-        return -1;
-    }
+    public abstract ArrayList<DisplejNumber> ohodnot();
+    
+    public abstract ArrayList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka);
 }

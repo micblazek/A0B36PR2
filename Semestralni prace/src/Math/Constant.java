@@ -4,6 +4,9 @@
  */
 package Math;
 
+import GUI.DisplejNumber;
+import java.util.ArrayList;
+
 /**
  *
  * @author michalblazek
@@ -41,5 +44,15 @@ public class Constant extends Expr {
             return Double.toString(constant);
         
         
+    }
+
+    @Override
+    public ArrayList<DisplejNumber> ohodnot() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ArrayList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

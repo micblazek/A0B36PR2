@@ -294,13 +294,13 @@ public class BinOp extends Expr {
                     i--;
                 }
             } catch (ClassCastException cce) {
-                List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new Bracers('(', new Constant(0), ')')));
+                List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new Bracers('(', new NullSymbol(), ')')));
                 List.remove(i + 1);
                 List.remove(i - 1);
                 i--;
             } catch (IndexOutOfBoundsException ioobe) {
                 // pro psaní hodnot real-time
-                List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new Constant(Integer.valueOf(1))));
+                List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new NullSymbol()));
                 List.remove(i - 1);
                 i--;
             }
@@ -316,9 +316,9 @@ public class BinOp extends Expr {
                 } catch (IndexOutOfBoundsException e) {
                     // pro psaní hodnot real-time
                     if (List.get(i).toString().charAt(0) == '(') {
-                        List.set(i, new Bracers('(', new Constant(0), ')'));
+                        List.set(i, new Bracers('(', new NullSymbol(), ')'));
                     } else {
-                        List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new Constant(Integer.valueOf(0))));
+                        List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new NullSymbol()));
                         List.remove(i - 1);
                         i--;
                     }

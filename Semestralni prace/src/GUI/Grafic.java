@@ -65,7 +65,6 @@ public class Grafic {
                 default:
                     g.drawString(vstup.get(i).getValue(), vstup.get(i).getX() * nejdelsiBunka + startX + nejdelsiBunka / 2 - vstup.get(i).getValue().length() * sirkaZnaku / 2, startY - vstup.get(i).getY() * vyskaZnaku);                  
             }
-            System.out.println(vstup.get(i).toString());
         }
 
     }

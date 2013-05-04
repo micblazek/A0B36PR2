@@ -107,10 +107,7 @@ public class MathList<T> extends ArrayList<T> {
             for (int j = indexKZ; j != indexZZ - 1; j--) {
                 List.remove(j);
             }
-
-
             //Vytvoří BinOp z vnitřku závorek
-            //List.add(indexZZ, BinOp.fromArrayList(ListP));
             try {
                 List.add(indexZZ, BinOp.fromArrayList(ListP));
             } catch (IndexOutOfBoundsException e) {
@@ -132,40 +129,68 @@ public class MathList<T> extends ArrayList<T> {
          * matematických zákonů. Nejprve se provede násobení a dělení a poté
          * teprve sčítání a odčítání.
          */
+        int mocnina = 0;
         for (int i = 0; i < List.size(); i++) {
-            if (List.get(i).getClass() == "".getClass() && (List.get(i).toString().charAt(0) == '^')) {
-                List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), (Expr) List.get(i + 1)));
-                List.remove(i + 1);
-                List.remove(i - 1);
-                i--;
+            if (List.get(i).getClass() == "".getClass() && List.get(i).toString().charAt(0) == '^') {
+                mocnina++;
             }
         }
-
-        for (int i = 0; i < List.size(); i++) {
-            try {
-                if (List.get(i).getClass() == "".getClass() && (List.get(i).toString().charAt(0) == '*' || List.get(i).toString().charAt(0) == '/')) {
-                    List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), (Expr) List.get(i + 1)));
+        for (int i = 1; mocnina != 0; i += 3) {
+            if (List.get(i).getClass().equals(String.class) && (List.get(i).toString().charAt(0) == '^')) {
+                try {
+                    List.set(i, new BinOp(List.get(i).toString().charAt(0), (Expr) List.get(i - 1), (Expr) List.get(i + 1)));
                     List.remove(i + 1);
                     List.remove(i - 1);
                     i--;
+                    mocnina--;
+                } catch (IndexOutOfBoundsException e) {
+                    // pro psaní hodnot real-time                
+                    List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new NullSymbol()));
+                    List.remove(i - 1);
+                    i--;
+                    mocnina--;
                 }
-            } catch (ClassCastException cce) {
-                List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new Bracers('(', new NullSymbol(), ')')));
-                List.remove(i + 1);
-                List.remove(i - 1);
+            } else {
                 i--;
-            } catch (IndexOutOfBoundsException ioobe) {
-                // pro psaní hodnot real-time
-                List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new NullSymbol()));
-                List.remove(i - 1);
-                i--;
+            }
+            if (i + 3 >= List.size()) {
+                i = -2;
+            }
+        }
+        int nasobeniDeleni = 0;
+        for (int i = 0; i < List.size(); i++) {
+            if (List.get(i).getClass() == "".getClass() && (List.get(i).toString().charAt(0) == '*' || List.get(i).toString().charAt(0) == '/')) {
+                nasobeniDeleni++;
             }
         }
 
-        for (int i = 0; i < List.size(); i++) {
-            if (List.get(i).getClass() == "".getClass()) {
+        for (int i = 1; nasobeniDeleni != 0; i += 3) {
+            if (List.get(i).getClass().equals(String.class) && (List.get(i).toString().charAt(0) == '*' || List.get(i).toString().charAt(0) == '/')) {
                 try {
-                    List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), (Expr) List.get(i + 1)));
+                    List.set(i, new BinOp(List.get(i).toString().charAt(0), (Expr) List.get(i - 1), (Expr) List.get(i + 1)));
+                    List.remove(i + 1);
+                    List.remove(i - 1);
+                    i--;
+                    nasobeniDeleni--;
+                } catch (IndexOutOfBoundsException e) {
+                    // pro psaní hodnot real-time                
+                    List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new NullSymbol()));
+                    List.remove(i - 1);
+                    i--;
+                    nasobeniDeleni--;
+                }
+            } else {
+                i--;
+            }
+            if (i + 3 >= List.size()) {
+                i = -2;
+            }
+        }
+
+        for (int i = 1; List.size() != 1; i += 3) {
+            if (List.get(i).getClass().equals(String.class)) {
+                try {
+                    List.set(i, new BinOp(List.get(i).toString().charAt(0), (Expr) List.get(i - 1), (Expr) List.get(i + 1)));
                     List.remove(i + 1);
                     List.remove(i - 1);
                     i--;
@@ -176,11 +201,12 @@ public class MathList<T> extends ArrayList<T> {
                     } else {
                         List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new NullSymbol()));
                         List.remove(i - 1);
-                        i--;
+                        i = 0;
                     }
-
                 }
-
+            }
+            if (i + 3 >= List.size()) {
+                i = -2;
             }
         }
         if (List.size() > 0) {

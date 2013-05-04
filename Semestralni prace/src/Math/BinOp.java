@@ -347,8 +347,7 @@ public class BinOp extends Expr {
             /* 
              * Vytváření zlomku = posun Y souřadnice
              * Přidá operand dělení mezi čitatele a jmenovatele
-             */
-            //list.add(new DisplejNumber(Character.toString(this.operand), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
+             */          
             int delkaZlomkoveCary = 1;
             if (this.c1.delkaBinOps() > this.c2.delkaBinOps()) {
                 delkaZlomkoveCary = this.c1.delkaBinOps();

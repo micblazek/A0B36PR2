@@ -21,7 +21,7 @@ public abstract class Expr {
         int zanoreni = pocitadlo;
 
         if (this.getClass().equals(new BinOp().getClass())) {
-            if (((BinOp) this).operand == '/') {
+            if (((BinOp) this).operand == '/' || ((BinOp) this).operand == '^') {
                 zanoreni++;
                 if (((BinOp) this).c1.hloubkaBinOps(zanoreni) > ((BinOp) this).c2.hloubkaBinOps(zanoreni)) {
                     return ((BinOp) this).c1.hloubkaBinOps(zanoreni);

@@ -4,7 +4,6 @@
  */
 package GUI;
 
-import com.sun.org.apache.bcel.internal.generic.BREAKPOINT;
 import java.util.ArrayList;
 
 /**
@@ -32,16 +31,16 @@ public class DisplejFraction extends DisplejNumber {
     public void setLenght(int lenght) {
         this.lenght = lenght;
     }
-    
 
     public int vytvorDelku(ArrayList<DisplejNumber> list) {
-
-
+        /*
+         * Vytváří délku zlomkové čáry
+         */
         int zacatek = 0;
         int konec = Integer.MIN_VALUE;
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getX() >= konec) {
-                konec = list.get(i).getX()+1;
+                konec = list.get(i).getX() + 1;
             }
         }
         for (int i = 0; i < list.size(); i++) {
@@ -54,6 +53,17 @@ public class DisplejFraction extends DisplejNumber {
                 }
             }
         }
-            return konec - zacatek;
-    }
+        
+        for (int i = konec; i > this.getX(); i--) {
+            if((DisplejNumber.isExist(i, this.getY(), list) || DisplejNumber.isExist(i, this.getY()+1, list) || DisplejNumber.isExist(i, this.getY()-1, list))==false){
+                konec = i;
+            }
+        }
+        for (int i = zacatek; i < this.getX(); i++) {
+            if((DisplejNumber.isExist(i, this.getY(), list) || DisplejNumber.isExist(i, this.getY()+1, list) || DisplejNumber.isExist(i, this.getY()-1, list))==false){
+                zacatek = i+1;
+            }
+        }
+        return konec - zacatek;
+    }    
 }

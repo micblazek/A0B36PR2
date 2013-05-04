@@ -5,13 +5,15 @@
 package Math;
 
 import GUI.DisplejNumber;
+import System.MathList;
 import java.util.ArrayList;
 
 /**
  *
  * @author michalblazek
  */
-public class Bracers extends Expr{
+public class Bracers extends Expr {
+
     public char b1;
     public Expr value;
     public char b2;
@@ -24,7 +26,7 @@ public class Bracers extends Expr{
 
     public Bracers() {
     }
-      
+
     @Override
     public double evaluate() {
         return value.evaluate();
@@ -42,16 +44,33 @@ public class Bracers extends Expr{
 
     @Override
     public String toString() {
-        return b1+value.toString()+b2;
+        return b1 + value.toString() + b2;
     }
+
     @Override
-    public ArrayList<DisplejNumber> ohodnot() {
-        return ((BinOp)this.value).ohodnot();
+    public MathList<DisplejNumber> ohodnot() {
+        if (this.value.getClass() == BinOp.class) {
+            return ((BinOp) this.value).ohodnot();
+        } else {
+            if (this.value.getClass() == Constant.class) {
+                return ((Constant) this.value).ohodnot();
+            }else
+                return ((Bracers) this.value).ohodnot();
+        }
     }
-    
+
     @Override
-    public ArrayList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
-        return ((BinOp)this.value).ohodnot(postupX, delka, postupY, hloubka);
+    public MathList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
+         if (this.value.getClass() == BinOp.class) {
+            return ((BinOp) this.value).ohodnot(postupX, delka, postupY, hloubka);
+        } else {
+            if (this.value.getClass() == Constant.class) {
+                return ((Constant) this.value).ohodnot(postupX, delka, postupY, hloubka);
+            }else
+                return ((Bracers) this.value).ohodnot();
+        }
+        
+        
+        
     }
-    
 }

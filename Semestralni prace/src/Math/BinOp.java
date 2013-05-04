@@ -6,6 +6,7 @@ package Math;
 
 import GUI.DisplejFraction;
 import GUI.DisplejNumber;
+import System.MathList;
 import java.util.ArrayList;
 
 /**
@@ -201,7 +202,7 @@ public class BinOp extends Expr {
 
         //Spočítá počet závorek, uzavřených dvojic.
         for (int i = 0; List.size() > i; i++) {
-            if (List.get(i).toString().charAt(0) == '(') {
+            if (List.get(i).toString().charAt(0) == '(' && List.get(i).getClass() != Bracers.class) {
                 pocetzavorek++;
             }
         }
@@ -216,6 +217,7 @@ public class BinOp extends Expr {
             List.remove(0);
         }
         // Převede čísla v řetězci na konstanty.
+        // PROBLÉM
         for (int i = 0; i < List.size(); i++) {
             if (Character.isDigit(List.get(i).toString().charAt(0)) && List.get(i).getClass().equals(Constant.class) == false) {
                 List.set(i, new Constant(Double.valueOf(List.get(i).toString())));
@@ -225,13 +227,19 @@ public class BinOp extends Expr {
         while (pocetzavorek != 0) {
             //Najde index nejvnitřejší konečné závorky.
             for (int i = 0; indexKZ == 0; i++) {
-                if (List.get(i).toString().charAt(0) == ')') {
+                try {
+                    if (List.get(i).toString().charAt(0) == ')') {
+                        indexKZ = i;
+                    }
+                } catch (IndexOutOfBoundsException ix) {
+                    // Pro případ real-time tvoření, jestliže je zadaná jenom jedna část závorek, bude nakonec přidána mezera a označena joko koncová závorka
                     indexKZ = i;
+                    List.add(" ");
                 }
             }
             //Najde index nejvnitřejší začínající závorky.
             for (int i = indexKZ; indexZZ == Integer.MAX_VALUE; i--) {
-                if (List.get(i).toString().charAt(0) == '(') {
+                if (List.get(i).toString().charAt(0) == '(' && List.get(i).getClass() != Bracers.class) {
                     indexZZ = i;
                 }
             }
@@ -243,9 +251,15 @@ public class BinOp extends Expr {
             for (int j = indexKZ; j != indexZZ - 1; j--) {
                 List.remove(j);
             }
-            //Zavolá znovu metodu výpočet, jako vstup bude ArrayList vnitřní závorky.
+
+
+            //Vytvoří BinOp z vnitřku závorek
             //List.add(indexZZ, BinOp.fromArrayList(ListP));
-            List.add(indexZZ, BinOp.fromArrayList(ListP));
+            try {
+                List.add(indexZZ, BinOp.fromArrayList(ListP));
+            } catch (IndexOutOfBoundsException e) {
+                List.add("(");
+            }
             ListP.clear();
             pocetzavorek--;
             indexKZ = 0;
@@ -272,9 +286,21 @@ public class BinOp extends Expr {
         }
 
         for (int i = 0; i < List.size(); i++) {
-            if (List.get(i).getClass() == "".getClass() && (List.get(i).toString().charAt(0) == '*' || List.get(i).toString().charAt(0) == '/')) {
-                List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), (Expr) List.get(i + 1)));
+            try {
+                if (List.get(i).getClass() == "".getClass() && (List.get(i).toString().charAt(0) == '*' || List.get(i).toString().charAt(0) == '/')) {
+                    List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), (Expr) List.get(i + 1)));
+                    List.remove(i + 1);
+                    List.remove(i - 1);
+                    i--;
+                }
+            } catch (ClassCastException cce) {
+                List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new Bracers('(', new Constant(0), ')')));
                 List.remove(i + 1);
+                List.remove(i - 1);
+                i--;
+            } catch (IndexOutOfBoundsException ioobe) {
+                // pro psaní hodnot real-time
+                List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new Constant(Integer.valueOf(1))));
                 List.remove(i - 1);
                 i--;
             }
@@ -282,17 +308,22 @@ public class BinOp extends Expr {
 
         for (int i = 0; i < List.size(); i++) {
             if (List.get(i).getClass() == "".getClass()) {
-                //try {
+                try {
                     List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), (Expr) List.get(i + 1)));
                     List.remove(i + 1);
                     List.remove(i - 1);
                     i--;
-//                } catch (IndexOutOfBoundsException e) {
-//                    // pro pasní hodnot realtime
-//                    List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new Constant(Integer.valueOf(0))));
-//                    List.remove(i - 1);
-//                    i--;
-//                }
+                } catch (IndexOutOfBoundsException e) {
+                    // pro psaní hodnot real-time
+                    if (List.get(i).toString().charAt(0) == '(') {
+                        List.set(i, new Bracers('(', new Constant(0), ')'));
+                    } else {
+                        List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new Constant(Integer.valueOf(0))));
+                        List.remove(i - 1);
+                        i--;
+                    }
+
+                }
 
             }
         }
@@ -300,17 +331,17 @@ public class BinOp extends Expr {
     }
 
     @Override
-    public ArrayList<DisplejNumber> ohodnot() {
+    public MathList<DisplejNumber> ohodnot() {
         int hloubka = this.hloubkaBinOps();
         int delka = this.delkaBinOps();
-        ArrayList<Character> postupX = new ArrayList<Character>();
-        ArrayList<Character> postupY = new ArrayList<Character>();
+        MathList<Character> postupX = new MathList<Character>();
+        MathList<Character> postupY = new MathList<Character>();
         return this.ohodnot(postupX, delka, postupY, hloubka);
     }
 
     @Override
-    public ArrayList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
-        ArrayList<DisplejNumber> list = new ArrayList<DisplejNumber>();
+    public MathList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
+        MathList<DisplejNumber> list = new MathList<DisplejNumber>();
 
         if (this.operand == '/') {
             /* 
@@ -319,12 +350,12 @@ public class BinOp extends Expr {
              */
             //list.add(new DisplejNumber(Character.toString(this.operand), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
             int delkaZlomkoveCary = 1;
-            if(this.c1.delkaBinOps()>this.c2.delkaBinOps()){
+            if (this.c1.delkaBinOps() > this.c2.delkaBinOps()) {
                 delkaZlomkoveCary = this.c1.delkaBinOps();
-            }else{
+            } else {
                 delkaZlomkoveCary = this.c2.delkaBinOps();
             }
-            list.add(new DisplejFraction(Character.toString(this.operand), xGeometrickaRada(delka, postupX),yGeometrickaRada(hloubka, postupY), delkaZlomkoveCary));
+            list.add(new DisplejFraction(Character.toString(this.operand), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY), delkaZlomkoveCary));
             /*
              * Vytváření čitatele
              */
@@ -402,7 +433,7 @@ public class BinOp extends Expr {
         return list;
     }
 
-    private static int yGeometrickaRada(int hloubka, ArrayList<Character> prubeh) {
+    protected static int yGeometrickaRada(int hloubka, ArrayList<Character> prubeh) {
         int g = 0;
         hloubka--;
         for (int i = 0; i < prubeh.size(); i++) {
@@ -416,7 +447,7 @@ public class BinOp extends Expr {
         return g;
     }
 
-    private static int xGeometrickaRada(int delka, ArrayList<Character> prubeh) {
+    protected static int xGeometrickaRada(int delka, ArrayList<Character> prubeh) {
         int g = 0;
         delka--;
         for (int i = 0; i < prubeh.size(); i++) {

@@ -5,6 +5,7 @@
 package Math;
 
 import GUI.DisplejNumber;
+import System.MathList;
 import java.util.ArrayList;
 
 /**
@@ -41,18 +42,20 @@ public class Constant extends Expr {
     public String toString() {
       //return String.format("%.3f", constant);
         
-            return Double.toString(constant);
-        
-        
+            return Double.toString(constant);    
     }
 
     @Override
-    public ArrayList<DisplejNumber> ohodnot() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public MathList<DisplejNumber> ohodnot() {
+        MathList<DisplejNumber> list = new MathList<DisplejNumber>();
+        list.add(new DisplejNumber(Double.toString(this.constant), 0, 0));
+        return list;
     }
 
     @Override
-    public ArrayList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public MathList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
+        MathList<DisplejNumber> list = new MathList<DisplejNumber>();
+        list.add(new DisplejNumber(Double.toString(this.constant), BinOp.xGeometrickaRada(delka, postupX), BinOp.yGeometrickaRada(hloubka, postupY)));
+        return list;
     }
-}
+    }

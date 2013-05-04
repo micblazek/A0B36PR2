@@ -6,7 +6,9 @@ package GUI;
 
 import Math.BinOp;
 import Math.Expr;
+import System.MathList;
 import System.Source;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import javax.swing.JPanel;
@@ -35,10 +37,15 @@ public class Grafic {
     public void drawSource(String source, int Scrol, JPanel panel, JScrollBar bar, Graphics g) {
         int startX = 20;
         int startY = panel.getHeight() / 4;
-        source = "(1/3+3/2)/(9/2+3/2)";
-        ArrayList<DisplejNumber> vstup = Grafic.normalizuj(new ArrayList<DisplejNumber>(((BinOp.fromArrayList(new ArrayList(Source.fillColection(source))))).ohodnot()));
-        int nejdelsiBunka = sirkaZnaku * Grafic.nejdelsiBunka(vstup);
+        
+        if(source.isEmpty()){
+          source = "0";  
+        }
+        MathList<DisplejNumber> vstup = ((new MathList()).fillColection(source).fromMathList()).ohodnot().normalizuj();
 
+        
+//        ArrayList<DisplejNumber> vstup = Grafic.normalizuj(new ArrayList<DisplejNumber>(((BinOp.fromArrayList(new ArrayList(Source.fillColection(source))))).ohodnot()));
+        int nejdelsiBunka = sirkaZnaku * Grafic.nejdelsiBunka(vstup);
 
         for (int i = 0; i < vstup.size(); i++) {
             switch (vstup.get(i).getValue().charAt(0)) {
@@ -47,7 +54,13 @@ public class Grafic {
                     System.out.println("čára");
                     int x1 = (int) (vstup.get(i).getX() * nejdelsiBunka + startX + nejdelsiBunka / 2 - vstup.get(i).getValue().length() * sirkaZnaku / 2 - (((DisplejFraction)vstup.get(i)).getLenght()/2.0)*nejdelsiBunka);
                     int x2 = (int) (vstup.get(i).getX() * nejdelsiBunka + startX + nejdelsiBunka / 2 - vstup.get(i).getValue().length() * sirkaZnaku / 2 + (((DisplejFraction)vstup.get(i)).getLenght()/2.0)*nejdelsiBunka);
-                    g.drawLine(x1, startY - vstup.get(i).getY() * vyskaZnaku - vyskaZnaku/2,x2, startY - vstup.get(i).getY() * vyskaZnaku - vyskaZnaku/2);
+                    if(i==0){
+                        g.setColor(Color.red);
+                        g.drawLine(x1, startY - vstup.get(i).getY() * vyskaZnaku - vyskaZnaku/2,x2, startY - vstup.get(i).getY() * vyskaZnaku - vyskaZnaku/2);
+                        g.setColor(Color.black);
+                    }else{
+                        g.drawLine(x1, startY - vstup.get(i).getY() * vyskaZnaku - vyskaZnaku/2,x2, startY - vstup.get(i).getY() * vyskaZnaku - vyskaZnaku/2);  
+                    }
                     break;
                 default:
                     g.drawString(vstup.get(i).getValue(), vstup.get(i).getX() * nejdelsiBunka + startX + nejdelsiBunka / 2 - vstup.get(i).getValue().length() * sirkaZnaku / 2, startY - vstup.get(i).getY() * vyskaZnaku);                  
@@ -65,27 +78,6 @@ public class Grafic {
             y -= 15;
         }
         g.drawString(result, x, y);
-    }
-
-    private int posunSouradnic(Object o, int sirka) {
-        return o.toString().length() * sirka;
-    }
-
-    public static ArrayList<DisplejNumber> normalizuj(ArrayList<DisplejNumber> vstup) {
-        int maxX = Integer.MAX_VALUE, maxY = Integer.MIN_VALUE;
-        for (int i = 0; i < vstup.size(); i++) {
-            if (vstup.get(i).getX() < maxX) {
-                maxX = vstup.get(i).getX();
-            }
-            if (vstup.get(i).getY() > maxY) {
-                maxY = Math.abs(vstup.get(i).getY());
-            }
-        }
-        for (int i = 0; i < vstup.size(); i++) {
-            vstup.get(i).setX(vstup.get(i).getX() + Math.abs(maxX));
-            vstup.get(i).setY(vstup.get(i).getY() - maxY);
-        }
-        return vstup;
     }
 
     public static int nejdelsiBunka(ArrayList<DisplejNumber> vstup) {

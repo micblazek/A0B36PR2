@@ -1,6 +1,7 @@
 package Math;
 
 import GUI.DisplejNumber;
+import System.MathList;
 import java.util.ArrayList;
 
 public abstract class Expr {
@@ -68,7 +69,7 @@ public abstract class Expr {
         return delka;
     }
     
-    public abstract ArrayList<DisplejNumber> ohodnot();
+    public abstract MathList<DisplejNumber> ohodnot();
     
-    public abstract ArrayList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka);
+    public abstract MathList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka);
 }

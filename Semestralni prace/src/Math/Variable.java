@@ -5,6 +5,7 @@
 package Math;
 
 import GUI.DisplejNumber;
+import System.MathList;
 import java.util.ArrayList;
 
 /**
@@ -53,12 +54,12 @@ public class Variable extends Expr {
     }
 
     @Override
-    public ArrayList<DisplejNumber> ohodnot() {
+    public MathList<DisplejNumber> ohodnot() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public ArrayList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
+    public MathList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

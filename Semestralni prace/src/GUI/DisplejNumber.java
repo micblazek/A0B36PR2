@@ -4,12 +4,15 @@
  */
 package GUI;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author michalblazek
  */
 public class DisplejNumber {
-    private String  value;
+
+    private String value;
     private int x;
     private int y;
 
@@ -19,9 +22,12 @@ public class DisplejNumber {
         this.y = y;
     }
 
+    public DisplejNumber() {
+    }
+
     @Override
     public String toString() {
-        return value+"["+x+", "+y+"]";
+        return value + "[" + x + ", " + y + "]";
     }
 
     public String getValue() {
@@ -46,5 +52,14 @@ public class DisplejNumber {
 
     public void setY(int y) {
         this.y = y;
-    } 
+    }
+
+    public static boolean isExist(int x, int y, ArrayList<DisplejNumber> list) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getX() == x && list.get(i).getY() == y) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -350,9 +350,10 @@ public class BinOp extends Expr {
              */          
             int delkaZlomkoveCary = 1;
             if (this.c1.delkaBinOps() > this.c2.delkaBinOps()) {
-                delkaZlomkoveCary = this.c1.delkaBinOps();
+                //delkaZlomkoveCary = this.c1.delkaBinOps()*4-1;
+                delkaZlomkoveCary= (int)(2*Math.pow(2, this.c1.delkaBinOps())-1);
             } else {
-                delkaZlomkoveCary = this.c2.delkaBinOps();
+                delkaZlomkoveCary= (int)(2*Math.pow(2, this.c2.delkaBinOps())-1);
             }
             list.add(new DisplejFraction(Character.toString(this.operand), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY), delkaZlomkoveCary));
             /*

@@ -21,8 +21,6 @@ import javax.swing.JScrollBar;
  * @author michalblazek
  */
 public class Grafic {
-    //final private int fy = 78;
-
     private int vyskaZnaku = 14;
     private int sirkaZnaku = 11;
 
@@ -37,7 +35,6 @@ public class Grafic {
     }
 
     public void drawSource(String source, int Scrol, JPanel panel, JScrollBar bar, Graphics g) {
-
         int startX = 20;
         int startY = panel.getHeight() / 4;
 
@@ -46,13 +43,12 @@ public class Grafic {
         }
         try {
             MathList<DisplejNumber> vstup = ((new MathList()).fillColection(source).fromMathList()).ohodnot().normalizuj();
-
             int nejdelsiBunka = sirkaZnaku * Grafic.nejdelsiBunka(vstup);
 
             for (int i = 0; i < vstup.size(); i++) {
                 switch (vstup.get(i).getValue().charAt(0)) {
                     case '/':
-                        vstup.set(i, new DisplejFraction(vstup.get(i).getValue(), vstup.get(i).getX(), vstup.get(i).getY(), ((DisplejFraction) vstup.get(i)).vytvorDelku(vstup)));
+                        //vstup.set(i, new DisplejFraction(vstup.get(i).getValue(), vstup.get(i).getX(), vstup.get(i).getY(), ((DisplejFraction) vstup.get(i)).vytvorDelku(vstup)));
                         System.out.println("čára");
                         int x1 = (int) (vstup.get(i).getX() * nejdelsiBunka + startX + nejdelsiBunka / 2 - vstup.get(i).getValue().length() * sirkaZnaku / 2 - (((DisplejFraction) vstup.get(i)).getLenght() / 2.0) * nejdelsiBunka);
                         int x2 = (int) (vstup.get(i).getX() * nejdelsiBunka + startX + nejdelsiBunka / 2 - vstup.get(i).getValue().length() * sirkaZnaku / 2 + (((DisplejFraction) vstup.get(i)).getLenght() / 2.0) * nejdelsiBunka);

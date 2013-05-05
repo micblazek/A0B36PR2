@@ -52,8 +52,7 @@ public class DisplejFraction extends DisplejNumber {
                     konec = list.get(i).getX();
                 }
             }
-        }
-        
+        }       
         for (int i = konec; i > this.getX(); i--) {
             if((DisplejNumber.isExist(i, this.getY(), list) || DisplejNumber.isExist(i, this.getY()+1, list) || DisplejNumber.isExist(i, this.getY()-1, list))==false){
                 konec = i;

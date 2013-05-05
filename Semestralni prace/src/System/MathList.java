@@ -6,6 +6,7 @@ package System;
 
 import GUI.DisplejFraction;
 import GUI.DisplejNumber;
+import GUI.VstupException;
 import Math.BinOp;
 import Math.Bracers;
 import Math.Constant;
@@ -43,7 +44,10 @@ public class MathList<T> extends ArrayList<T> {
         super(initialCapacity);
     }
 
-    public Expr fromMathList() throws IndexOutOfBoundsException {
+    public Expr fromMathList() throws IndexOutOfBoundsException, VstupException {
+        if(this.textControl() == false && this.size()>0){
+            throw new VstupException(1);
+        }
         MathList<Object> List = new MathList();
         List.addAll(this);
         if (List.size() == 1 && List.get(0).getClass() == BinOp.class) {
@@ -100,7 +104,7 @@ public class MathList<T> extends ArrayList<T> {
                 }
             }
             //Vytvoří nový ArrayList obsahujicí řetězec nejvnitřejší závorky.
-            ArrayList ListP = new ArrayList();
+            MathList ListP = new MathList();
             for (int j = indexZZ + 1; j != indexKZ; j++) {
                 ListP.add(List.get(j));
             }
@@ -109,7 +113,7 @@ public class MathList<T> extends ArrayList<T> {
             }
             //Vytvoří BinOp z vnitřku závorek
             try {
-                List.add(indexZZ, BinOp.fromArrayList(ListP));
+                List.add(indexZZ, ListP.fromMathList());
             } catch (IndexOutOfBoundsException e) {
                 List.add("(");
             }
@@ -178,6 +182,12 @@ public class MathList<T> extends ArrayList<T> {
                     List.remove(i - 1);
                     i--;
                     nasobeniDeleni--;
+                } catch (ClassCastException cce){
+                    List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new NullSymbol()));
+                    List.remove(i + 1);
+                    List.remove(i - 1);
+                    i--;
+                    nasobeniDeleni--;
                 }
             } else {
                 i--;
@@ -208,6 +218,9 @@ public class MathList<T> extends ArrayList<T> {
             if (i + 3 >= List.size()) {
                 i = -2;
             }
+        }
+        if (List.size() == 1 && List.get(0)=="("){
+            List.set(0, new Constant(0));
         }
         if (List.size() > 0) {
             return new Bracers('(', (Expr) List.get(0), ')');
@@ -298,7 +311,7 @@ public class MathList<T> extends ArrayList<T> {
          * Jestliže vstupní kolekce obsahuje nepodporovaný znak vrátí hodnotu
          * FALSE.
          */
-        char[] podporovaneZnaky = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '-', '*', '/', '^', '(', ')', '.'};
+        char[] podporovaneZnaky = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '-', '*', '/', '^', '(', ')', '.', ' '};
         boolean vystup = false;
         for (int i = 0; i < this.size(); i++) {
             boolean a = false;
@@ -311,7 +324,7 @@ public class MathList<T> extends ArrayList<T> {
                 vystup = true;
                 a = false;
             } else {
-                vystup = false;
+                return false;
             }
         }
         return vystup;

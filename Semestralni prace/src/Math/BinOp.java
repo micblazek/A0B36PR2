@@ -347,13 +347,13 @@ public class BinOp extends Expr {
             /* 
              * Vytváření zlomku = posun Y souřadnice
              * Přidá operand dělení mezi čitatele a jmenovatele
-             */          
+             */
             int delkaZlomkoveCary = 1;
             if (this.c1.delkaBinOps() > this.c2.delkaBinOps()) {
                 //delkaZlomkoveCary = this.c1.delkaBinOps()*4-1;
-                delkaZlomkoveCary= (int)(2*Math.pow(2, this.c1.delkaBinOps())-1);
+                delkaZlomkoveCary = (int) (2 * Math.pow(2, this.c1.delkaBinOps()) - 1);
             } else {
-                delkaZlomkoveCary= (int)(2*Math.pow(2, this.c2.delkaBinOps())-1);
+                delkaZlomkoveCary = (int) (2 * Math.pow(2, this.c2.delkaBinOps()) - 1);
             }
             list.add(new DisplejFraction(Character.toString(this.operand), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY), delkaZlomkoveCary));
             /*
@@ -391,44 +391,86 @@ public class BinOp extends Expr {
             }
             postupY.remove(postupY.size() - 1);
         } else {
-            /*
-             * Vytváření souřadnic pro +, -, * a mocninu
-             */
-            list.add(new DisplejNumber(Character.toString(this.operand), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
-            /*
-             * Vytváření souřadnic nalevo od operátoru
-             */
-            if (this.c1.getClass().equals(new BinOp().getClass()) || (this.c1.getClass().equals(new Bracers().getClass()))) {
-                postupX.add('-');
-                if (this.c1.getClass().equals(new BinOp().getClass())) {
-                    // Když je číslo nalevo od znaménka operace, bude rekurzivně zavolaná tatáž metoda
-                    list.addAll(((BinOp) this.c1).ohodnot(postupX, delka, postupY, hloubka));
+            if (this.operand == '^') {
+                /*
+                 * Vytváření mocněnce
+                 */                
+                if (this.c1.getClass().equals(new BinOp().getClass()) || (this.c1.getClass().equals(new Bracers().getClass()))) {
+                    postupY.add('-');
+                    if (this.c1.getClass().equals(new BinOp().getClass())) {
+                        //Když je mocněnec další operace, bude rekurzivně zavolaná tatáž metoda
+                        list.addAll(((BinOp) this.c1).ohodnot(postupX, delka, postupY, hloubka));
+                    } else {
+                        list.addAll(((Bracers) this.c1).ohodnot(postupX, delka, postupY, hloubka));
+                    }
                 } else {
-                    list.addAll(((Bracers) this.c1).ohodnot(postupX, delka, postupY, hloubka));
+                    //Když mocněnec není operace přiřadí mu souřednice Y o 1 nižší než nocnitely
+                    postupY.add('-');
+                    list.add(new DisplejNumber(this.c1.toString(), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
                 }
-            } else {
-                //Když číslo nalevo od znaménka není operace přiřadí mu souřednice X o 1 menší než operandu 
-                postupX.add('-');
-                list.add(new DisplejNumber(this.c1.toString(), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
-            }
-            postupX.remove(postupX.size() - 1);
-            /*
-             * Vytváření souřadnic napravo od operátoru
-             */
-            if (this.c2.getClass().equals(new BinOp().getClass()) || (this.c2.getClass().equals(new Bracers().getClass()))) {
-                postupX.add('+');
-                if (this.c2.getClass().equals(new BinOp().getClass())) {
-                    //Když je jmenovatel další operace, bude rekurzivně zavolaná tatáž metoda
-                    list.addAll(((BinOp) this.c2).ohodnot(postupX, delka, postupY, hloubka));
+                postupY.remove(postupY.size() - 1);
+                
+                list.add(new DisplejNumber("^", 0, 0));
+                /*
+                 * Vytváření mocnitele
+                 */
+                if (this.c2.getClass().equals(new BinOp().getClass()) || (this.c2.getClass().equals(new Bracers().getClass()))) {
+                    postupY.add('+');
+                    postupX.add('+');
+                    if (this.c2.getClass().equals(new BinOp().getClass())) {
+                        //Když je jmenovatel další operace, bude rekurzivně zavolaná tatáž metoda
+                        list.addAll(((BinOp) this.c2).ohodnot(postupX, delka, postupY, hloubka));
+                    } else {
+                        list.addAll(((Bracers) this.c2).ohodnot(postupX, delka, postupY, hloubka));
+                    }
                 } else {
-                    list.addAll(((Bracers) this.c2).ohodnot(postupX, delka, postupY, hloubka));
+                    //Když jmenovatel není operace přiřadí mu souřednice Y o 1 vyší mocněnci
+                    postupY.add('+');
+                    postupX.add('+');
+                    list.add(new DisplejNumber(this.c2.toString(), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
                 }
+                postupY.remove(postupY.size() - 1);
+                postupX.remove(postupX.size() - 1);
             } else {
-                //Když jmenovatel není operace přiřadí mu souřednice Y o 1 vyší než operandu dělení
-                postupX.add('+');
-                list.add(new DisplejNumber(this.c2.toString(), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
+                /*
+                 * Vytváření souřadnic pro +, -, *
+                 */
+                list.add(new DisplejNumber(Character.toString(this.operand), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
+                /*
+                 * Vytváření souřadnic nalevo od operátoru
+                 */
+                if (this.c1.getClass().equals(new BinOp().getClass()) || (this.c1.getClass().equals(new Bracers().getClass()))) {
+                    postupX.add('-');
+                    if (this.c1.getClass().equals(new BinOp().getClass())) {
+                        // Když je číslo nalevo od znaménka operace, bude rekurzivně zavolaná tatáž metoda
+                        list.addAll(((BinOp) this.c1).ohodnot(postupX, delka, postupY, hloubka));
+                    } else {
+                        list.addAll(((Bracers) this.c1).ohodnot(postupX, delka, postupY, hloubka));
+                    }
+                } else {
+                    //Když číslo nalevo od znaménka není operace přiřadí mu souřednice X o 1 menší než operandu 
+                    postupX.add('-');
+                    list.add(new DisplejNumber(this.c1.toString(), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
+                }
+                postupX.remove(postupX.size() - 1);
+                /*
+                 * Vytváření souřadnic napravo od operátoru
+                 */
+                if (this.c2.getClass().equals(new BinOp().getClass()) || (this.c2.getClass().equals(new Bracers().getClass()))) {
+                    postupX.add('+');
+                    if (this.c2.getClass().equals(new BinOp().getClass())) {
+                        //Když je jmenovatel další operace, bude rekurzivně zavolaná tatáž metoda
+                        list.addAll(((BinOp) this.c2).ohodnot(postupX, delka, postupY, hloubka));
+                    } else {
+                        list.addAll(((Bracers) this.c2).ohodnot(postupX, delka, postupY, hloubka));
+                    }
+                } else {
+                    //Když jmenovatel není operace přiřadí mu souřednice Y o 1 vyší než operandu dělení
+                    postupX.add('+');
+                    list.add(new DisplejNumber(this.c2.toString(), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
+                }
+                postupX.remove(postupX.size() - 1);
             }
-            postupX.remove(postupX.size() - 1);
         }
         return list;
     }

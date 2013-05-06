@@ -69,8 +69,5 @@ public class Bracers extends Expr {
             }else
                 return ((Bracers) this.value).ohodnot();
         }
-        
-        
-        
     }
 }

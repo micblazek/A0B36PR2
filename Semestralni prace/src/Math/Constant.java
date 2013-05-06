@@ -40,22 +40,27 @@ public class Constant extends Expr {
 
     @Override
     public String toString() {
-      //return String.format("%.3f", constant);
+        //return String.format("%.3f", constant);
+        if(((int)constant)==constant){
+            return Integer.toString((int)constant);
+        }else{
+            return Double.toString(constant);
+        }
         
-            return Double.toString(constant);    
+        //return Double.toString(constant);
     }
 
     @Override
     public MathList<DisplejNumber> ohodnot() {
         MathList<DisplejNumber> list = new MathList<DisplejNumber>();
-        list.add(new DisplejNumber(Double.toString(this.constant), 0, 0));
+        list.add(new DisplejNumber(this.toString(), 0, 0));
         return list;
     }
 
     @Override
     public MathList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
         MathList<DisplejNumber> list = new MathList<DisplejNumber>();
-        list.add(new DisplejNumber(Double.toString(this.constant), BinOp.xGeometrickaRada(delka, postupX), BinOp.yGeometrickaRada(hloubka, postupY)));
+        list.add(new DisplejNumber(this.toString(), BinOp.xGeometrickaRada(delka, postupX), BinOp.yGeometrickaRada(hloubka, postupY)));
         return list;
     }
-    }
+}

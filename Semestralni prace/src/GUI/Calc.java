@@ -11,6 +11,9 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileView;
 
 /**
  *
@@ -19,7 +22,6 @@ import javax.swing.JFileChooser;
 public class Calc extends javax.swing.JFrame {
 
     public String vstup = new String();
-    //public String zadani = new String();
     public String vysledek = new String();
     public int poziceScrolu = 0;
 
@@ -78,8 +80,8 @@ public class Calc extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Racionální kalkulačka");
-        setAlwaysOnTop(true);
         setLocationByPlatform(true);
+        setResizable(false);
 
         btn0.setText("0");
         btn0.addActionListener(new java.awt.event.ActionListener() {
@@ -306,7 +308,7 @@ public class Calc extends javax.swing.JFrame {
         DisplejLayout.setVerticalGroup(
             DisplejLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, DisplejLayout.createSequentialGroup()
-                .add(0, 140, Short.MAX_VALUE)
+                .add(0, 139, Short.MAX_VALUE)
                 .add(DisplejScrollBar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -437,7 +439,7 @@ public class Calc extends javax.swing.JFrame {
                             .add(btnClean)
                             .add(btnRovnase)))
                     .add(Operace, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 171, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(14, 14, 14))
+                .add(15, 15, 15))
         );
 
         Displej.getAccessibleContext().setAccessibleName("");
@@ -449,15 +451,13 @@ public class Calc extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void NumAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NumAction
-        vstup += evt.getActionCommand();
-        //zadani += evt.getActionCommand();       
+        vstup += evt.getActionCommand();     
         txtVstup.setText(vstup);
         Displej.repaint();
     }//GEN-LAST:event_NumAction
 
     private void btnCleanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCleanActionPerformed
         vstup = "";
-        //zadani = "";
         vysledek = "";
         txtVstup.setText(vstup);
         Displej.repaint();
@@ -469,7 +469,6 @@ public class Calc extends javax.swing.JFrame {
         }
         MathList input;
         input = new MathList().fillColection(vstup);
-        //input = new ArrayList(Source.fillColection(vstup));
         try {
             if (input.textControl()) {
                 if (input.bracers()) {
@@ -500,50 +499,61 @@ public class Calc extends javax.swing.JFrame {
             vstup = vstup.substring(0, vstup.length() - 1);
             txtVstup.setText(vstup);
             Displej.repaint();
-//            if ((zadani.charAt(zadani.length() - 1) == zadani.charAt(zadani.length() - 2)) && zadani.length() - 1 == '/') {
-//                zadani = zadani.substring(0, zadani.length() - 2);
-//                Displej.repaint();
-//            } else {
-//                zadani = zadani.substring(0, zadani.length() - 1);
-//                Displej.repaint();
-//            }
-
         } catch (StringIndexOutOfBoundsException ex) {
             vstup = "";
             txtVstup.setText(vstup);
-           // zadani = "";
             Displej.repaint();
         }
     }//GEN-LAST:event_btnSmazatActionPerformed
 
     private void mUlozitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mUlozitActionPerformed
-//        JFileChooser uloz = new JFileChooser();
-//        int n = uloz.showOpenDialog(uloz);
-//        Source.saveAsFile(uloz.getSelectedFile().toString(), txfVstup.getText() + " = " + txfVystup.getText());
+        JFileChooser uloz = new JFileChooser();
+        uloz.setDialogTitle("Uložit jako...");  
+        int n = uloz.showOpenDialog(uloz);
+        try {
+            Source.saveAsFile(uloz.getSelectedFile().toString()+".txt", vstup + " = " + vysledek);
+        } catch (Exception e) {
+        }
+        
     }//GEN-LAST:event_mUlozitActionPerformed
 
     private void mNacistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mNacistActionPerformed
-//        JFileChooser nacti = new JFileChooser();
-//        int n = nacti.showOpenDialog(nacti);
-//        txfVstup.setText(Source.loadFile(nacti.getSelectedFile().toString()));
-//        ArrayList input;
-//        input = new ArrayList(Source.fillColection(txfVstup.getText()));
-//
-//        try {
-//            if (Source.textControl(input)) {
-//                if (Source.bracers(input)) {
-//                    txfVystup.setText(Double.toString(BinOp.fromArrayList(input).evaluate()));
-//                } else {
-//                    txfVystup.setText("Chybná syntaxe, zkontroluj závorky.");
-//                }
-//            } else {
-//                txfVystup.setText("V zadání je nepodporovaný znak.");
-//            }
-//        } catch (NumberFormatException ex) {
-//            txfVystup.setText("Chyby vstupních dat, zkontroluj syntaxi.");
-//        } catch (ArrayIndexOutOfBoundsException ey) {
-//            txfVystup.setText("Chyby vstupních dat.");
-//        }
+        JFileChooser nacti = new JFileChooser();
+        nacti.setDialogTitle("Načíst jako...");
+        int n = nacti.showOpenDialog(nacti);
+        try{
+        vstup = Source.loadFile(nacti.getSelectedFile().toString());
+        }catch(NullPointerException npe){
+            nacti.hide();
+            vstup = "0";
+        }
+        txtVstup.setText(vstup);
+        
+         MathList input;
+        input = new MathList().fillColection(vstup);
+        try {
+            if (input.textControl()) {
+                if (input.bracers()) {
+                    vysledek = Double.toString(BinOp.fromArrayList(input).evaluate());
+                    Displej.repaint();
+                } else {
+                    vysledek = "Chybná syntaxe, zkontroluj závorky.";
+                    Displej.repaint();
+                }
+            } else {
+                vysledek = "V zadání je nepodporovaný znak.";
+                Displej.repaint();
+            }
+        } catch (NumberFormatException ex) {
+            vysledek = "Chyba vstupních dat.";
+            Displej.repaint();
+        } catch (ArrayIndexOutOfBoundsException ey) {
+            vysledek = "Chyba vstupních dat.";
+            Displej.repaint();
+        } catch (ClassCastException ez) {
+            vysledek = "Chyba vstupních dat.";
+            Displej.repaint();
+        }
     }//GEN-LAST:event_mNacistActionPerformed
 
     private void mKonecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mKonecActionPerformed
@@ -558,13 +568,11 @@ public class Calc extends javax.swing.JFrame {
     boolean zlomek = false;
     private void txtVstupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtVstupActionPerformed
         vstup = txtVstup.getText();
-        //zadani = vstup;
         Displej.repaint();
     }//GEN-LAST:event_txtVstupActionPerformed
 
     private void txtVstupKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtVstupKeyReleased
         vstup = txtVstup.getText();
-        //zadani = vstup;
         Displej.repaint();
     }//GEN-LAST:event_txtVstupKeyReleased
 

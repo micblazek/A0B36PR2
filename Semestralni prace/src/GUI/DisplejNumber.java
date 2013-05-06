@@ -10,7 +10,7 @@ import java.util.ArrayList;
  *
  * @author michalblazek
  */
-public class DisplejNumber {
+public class DisplejNumber{
 
     private String value;
     private int x;

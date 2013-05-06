@@ -45,7 +45,7 @@ public class MathList<T> extends ArrayList<T> {
     }
 
     public Expr fromMathList() throws IndexOutOfBoundsException, VstupException {
-        if(this.textControl() == false && this.size()>0){
+        if (this.textControl() == false && this.size() > 0) {
             throw new VstupException(1);
         }
         MathList<Object> List = new MathList();
@@ -182,7 +182,7 @@ public class MathList<T> extends ArrayList<T> {
                     List.remove(i - 1);
                     i--;
                     nasobeniDeleni--;
-                } catch (ClassCastException cce){
+                } catch (ClassCastException cce) {
                     List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new NullSymbol()));
                     List.remove(i + 1);
                     List.remove(i - 1);
@@ -213,13 +213,21 @@ public class MathList<T> extends ArrayList<T> {
                         List.remove(i - 1);
                         i = 0;
                     }
+                }catch(ClassCastException cce){
+                    List.set(i, new BinOp(List.get(i).toString().charAt(0), (Expr) List.get(i - 1), new NullSymbol()));
+                    List.remove(i + 1);
+                    List.remove(i - 1);
+                }
+            } else {
+                if (List.get(i).getClass().equals(Bracers.class)) {
+                    List.remove(i);
                 }
             }
             if (i + 3 >= List.size()) {
                 i = -2;
             }
         }
-        if (List.size() == 1 && List.get(0)=="("){
+        if (List.size() == 1 && List.get(0) == "(") {
             List.set(0, new Constant(0));
         }
         if (List.size() > 0) {
@@ -328,5 +336,37 @@ public class MathList<T> extends ArrayList<T> {
             }
         }
         return vystup;
+    }
+
+    public MathList<DisplejNumber> cleanWhiteSpaceInDisplejNuber() {
+        MathList<DisplejNumber> list = new MathList<DisplejNumber>();
+        list.add(((DisplejNumber) this.get(0)));
+        //Cyklus probíhá dokud i > size, a prvek je DisplejNuber nebo Fraction
+        for (int i = 1; i < this.size() && this.size() > 2 && (this.get(i - 1).getClass().equals(DisplejNumber.class) || this.get(i - 1).getClass().equals(DisplejFraction.class)) && (this.get(i).getClass().equals(DisplejNumber.class) || this.get(i).getClass().equals(DisplejFraction.class)); i++) {
+            //Prvek je DisplejNumber
+            if (this.get(i).getClass().equals(DisplejNumber.class)) {
+                //Prvek není o jednu větší nebo stejný
+                if (((list.get(i - 1)).getX() + 1 != ((DisplejNumber) this.get(i)).getX()) && (((DisplejNumber) this.get(i - 1)).getX() != ((DisplejNumber) this.get(i)).getX())) {
+                    list.add(new DisplejNumber(((DisplejNumber) this.get(i)).getValue(), ((DisplejNumber) this.get(i)).getX() - (((DisplejNumber) this.get(i)).getX() - list.get(i - 1).getX() - 1), ((DisplejNumber) this.get(i)).getY()));
+                } else {
+                    if ((((DisplejNumber) this.get(i - 1)).getX()) == ((DisplejNumber) this.get(i)).getX()) {
+                        list.add(new DisplejNumber(((DisplejNumber) this.get(i)).getValue(), list.get(i-1).getX() , ((DisplejNumber) this.get(i)).getY()));
+                    } else {
+                        list.add(new DisplejNumber(((DisplejNumber) this.get(i)).getValue(), ((DisplejNumber) this.get(i)).getX(), ((DisplejNumber) this.get(i)).getY()));
+                    }
+                }
+
+            }
+            //Prvek je DisplejFraction (zlomek)
+            if (this.get(i).getClass().equals(DisplejFraction.class)) {
+                //Prvek je o jednu větší než předchozí nebo stejný
+                if (((list.get(i - 1)).getX() + 1 != ((DisplejFraction) this.get(i)).getX()) && (((DisplejNumber) this.get(i - 1)).getX() != ((DisplejFraction) this.get(i)).getX())) {
+                    list.add(new DisplejFraction(((DisplejFraction) this.get(i)).getValue(), ((DisplejFraction) this.get(i)).getX() - (((DisplejFraction) this.get(i)).getX() - list.get(i - 1).getX() - 1), ((DisplejFraction) this.get(i)).getY(), ((DisplejFraction) this.get(i)).getLenght()));
+                } else {
+                    list.add(new DisplejFraction(((DisplejFraction) this.get(i)).getValue(), ((DisplejFraction) this.get(i)).getX(), ((DisplejFraction) this.get(i)).getY(), ((DisplejFraction) this.get(i)).getLenght()));
+                }
+            }
+        }
+        return list;
     }
 }

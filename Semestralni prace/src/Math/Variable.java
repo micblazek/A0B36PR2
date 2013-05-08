@@ -4,6 +4,7 @@
  */
 package Math;
 
+import GUI.BoundingBox;
 import GUI.DisplejNumber;
 import System.MathList;
 import java.util.ArrayList;
@@ -62,4 +63,35 @@ public class Variable extends Expr {
     public MathList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BoundingBox getBoundingBox(int x, int y) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int length() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int missingItemInBinOp() {
+        return 0;
+    }
+
+    @Override
+    public int missingItemInBinOp(int hloubka) {
+        return 0;
+    }
+
+    @Override
+    public boolean containNull() {
+        return false;
+    }
+  
 }

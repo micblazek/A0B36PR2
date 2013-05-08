@@ -213,10 +213,15 @@ public class MathList<T> extends ArrayList<T> {
                         List.remove(i - 1);
                         i = 0;
                     }
-                }catch(ClassCastException cce){
-                    List.set(i, new BinOp(List.get(i).toString().charAt(0), (Expr) List.get(i - 1), new NullSymbol()));
-                    List.remove(i + 1);
-                    List.remove(i - 1);
+                } catch (ClassCastException cce) {
+                    if (this.get(i).toString().charAt(0) == '(') {
+                        List.set(i, new NullSymbol());
+                        List.remove(i - 1);
+                    } else {
+                        List.set(i, new BinOp(List.get(i).toString().charAt(0), (Expr) List.get(i - 1), new NullSymbol()));
+                        List.remove(i + 1);
+                        List.remove(i - 1);
+                    }
                 }
             } else {
                 if (List.get(i).getClass().equals(Bracers.class)) {
@@ -350,7 +355,7 @@ public class MathList<T> extends ArrayList<T> {
                     list.add(new DisplejNumber(((DisplejNumber) this.get(i)).getValue(), ((DisplejNumber) this.get(i)).getX() - (((DisplejNumber) this.get(i)).getX() - list.get(i - 1).getX() - 1), ((DisplejNumber) this.get(i)).getY()));
                 } else {
                     if ((((DisplejNumber) this.get(i - 1)).getX()) == ((DisplejNumber) this.get(i)).getX()) {
-                        list.add(new DisplejNumber(((DisplejNumber) this.get(i)).getValue(), list.get(i-1).getX() , ((DisplejNumber) this.get(i)).getY()));
+                        list.add(new DisplejNumber(((DisplejNumber) this.get(i)).getValue(), list.get(i - 1).getX(), ((DisplejNumber) this.get(i)).getY()));
                     } else {
                         list.add(new DisplejNumber(((DisplejNumber) this.get(i)).getValue(), ((DisplejNumber) this.get(i)).getX(), ((DisplejNumber) this.get(i)).getY()));
                     }
@@ -365,6 +370,27 @@ public class MathList<T> extends ArrayList<T> {
                 } else {
                     list.add(new DisplejFraction(((DisplejFraction) this.get(i)).getValue(), ((DisplejFraction) this.get(i)).getX(), ((DisplejFraction) this.get(i)).getY(), ((DisplejFraction) this.get(i)).getLenght()));
                 }
+            }
+        }
+        return list;
+    }
+
+    public MathList<DisplejNumber> doSpacing() {
+        MathList<DisplejNumber> list = new MathList<DisplejNumber>();
+        list.add(((DisplejNumber) this.get(0)));
+        for (int i = 1; i < this.size(); i++) {
+            if (((DisplejNumber) this.get(i - 1)).getY() == ((DisplejNumber) this.get(i)).getY() && ((DisplejNumber) this.get(i - 1)).getX() + 1 == ((DisplejNumber) this.get(i)).getX()) {
+                if (this.get(i).getClass().equals(DisplejNumber.class)) {
+                    if (this.get(i - 1).getClass().equals(DisplejNumber.class)) {
+                        list.add(new DisplejNumber(((DisplejNumber) this.get(i)).getValue(), list.get(i - 1).getX() + list.get(i - 1).getValue().toString().length(), ((DisplejNumber) this.get(i)).getY()));
+                    } else {
+                        list.add(new DisplejNumber(((DisplejNumber) this.get(i)).getValue(), list.get(i - 1).getX() + ((DisplejFraction) list.get(i - 1)).getLenght(), ((DisplejNumber) this.get(i)).getY()));
+                    }
+                } else {
+                    list.add(new DisplejFraction(((DisplejNumber) this.get(i)).getValue(), ((DisplejNumber) this.get(i-1)).getX() + ((DisplejNumber) this.get(i - 1)).getValue().toString().length(), ((DisplejNumber) this.get(i)).getY(), ((DisplejFraction) this.get(i)).getLenght()));
+                }
+            } else {
+                list.add(((DisplejNumber) this.get(i)));
             }
         }
         return list;

@@ -9,6 +9,7 @@ import Math.Expr;
 import System.MathList;
 import System.Source;
 import System.XCompareMathList;
+import System.YCompareMathList;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -40,7 +41,10 @@ public class Grafic {
 
     public void drawSource(String source, int Scrol, JPanel panel, JScrollBar bar, Graphics g) {
         int startY = panel.getHeight() / 4;
-        int startX = 20;
+        int startX = 40;
+
+//        g.drawRect(50, 10, 40, 20);
+//        g.drawString("55", 50, 10+vyskaZnaku);
 
         if (source.isEmpty()) {
             source = "0";
@@ -48,12 +52,19 @@ public class Grafic {
         try {
             MathList<DisplejNumber> vstup = new MathList();
             vstup.fillColection(source);
+            //System.out.println(vstup);
             Expr p = vstup.fromMathList();
-            vstup = p.ohodnot().normalizuj();
-            Collections.sort(vstup, new XCompareMathList());                   
-            vstup = vstup.cleanWhiteSpaceInDisplejNuber();           
+            vstup = p.ohodnot();
+            //System.out.println(vstup);
+            vstup = vstup.normalizuj();
+            //System.out.println(vstup);
+            Collections.sort(vstup, new XCompareMathList());
+            //System.out.println(vstup);
+            vstup = vstup.cleanWhiteSpaceInDisplejNuber();
+            Collections.sort(vstup, new YCompareMathList());
+            vstup = vstup.doSpacing();
             int nejdelsiBunka = sirkaZnaku * Grafic.nejdelsiBunka(vstup);
-            
+
             //Posunutí pomocí baru
             Expr e = ((new MathList()).fillColection(source).fromMathList());
             if (e.delkaBinOps() * 3 * nejdelsiBunka(vstup) * sirkaZnaku + 20 > panel.getWidth()) {
@@ -66,9 +77,14 @@ public class Grafic {
             for (int i = 0; i < vstup.size(); i++) {
                 switch (vstup.get(i).getValue().charAt(0)) {
                     case '/':
-                        int x1 = (int) (vstup.get(i).getX() * nejdelsiBunka + startX + nejdelsiBunka / 2 - vstup.get(i).getValue().length() * sirkaZnaku / 2 - (((DisplejFraction) vstup.get(i)).getLenght() / 2.0) * nejdelsiBunka) + sirkaZnaku / 2;
-                        int x2 = (int) (vstup.get(i).getX() * nejdelsiBunka + startX + nejdelsiBunka / 2 - vstup.get(i).getValue().length() * sirkaZnaku / 2 + (((DisplejFraction) vstup.get(i)).getLenght() / 2.0) * nejdelsiBunka) + sirkaZnaku / 2 - 2;
+                        int x1 = vstup.get(i).getX() * sirkaZnaku  + startX;
+                        int x2 = vstup.get(i).getX() * sirkaZnaku  + startX + ((DisplejFraction) vstup.get(i)).getLenght() * sirkaZnaku-2;
+                        //int x1 = (int) (vstup.get(i).getX() * nejdelsiBunka + startX + nejdelsiBunka / 2 - vstup.get(i).getValue().length() * sirkaZnaku / 2 - (((DisplejFraction) vstup.get(i)).getLenght() / 2.0) * nejdelsiBunka) + sirkaZnaku / 2;
+                        //int x2 = (int) (vstup.get(i).getX() * nejdelsiBunka + startX + nejdelsiBunka / 2 - vstup.get(i).getValue().length() * sirkaZnaku / 2 + (((DisplejFraction) vstup.get(i)).getLenght() / 2.0) * nejdelsiBunka) + sirkaZnaku / 2 - 2;
                         g.drawLine(x1, startY - vstup.get(i).getY() * vyskaZnaku - vyskaZnaku / 2, x2, startY - vstup.get(i).getY() * vyskaZnaku - vyskaZnaku / 2);
+                        System.out.println(x1 + " " + x2);
+                        System.out.println((startY - vstup.get(i).getY() * vyskaZnaku - vyskaZnaku / 2) + " " + (startY - vstup.get(i).getY() * vyskaZnaku - vyskaZnaku / 2));
+                        System.out.println(vstup.get(i));
                         break;
                     case '^':
                         try {
@@ -78,10 +94,12 @@ public class Grafic {
                         }
                         break;
                     default:
-                        g.drawString(vstup.get(i).getValue(), vstup.get(i).getX() * nejdelsiBunka + startX + nejdelsiBunka / 2 - vstup.get(i).getValue().length() * sirkaZnaku / 2, startY - vstup.get(i).getY() * vyskaZnaku);
+                        g.drawString(vstup.get(i).getValue(), vstup.get(i).getX() * sirkaZnaku + startX, startY - vstup.get(i).getY() * vyskaZnaku);
+                       // g.drawString(vstup.get(i).getValue(), vstup.get(i).getX() * nejdelsiBunka + startX + nejdelsiBunka / 2 - vstup.get(i).getValue().length() * sirkaZnaku / 2, startY - vstup.get(i).getY() * vyskaZnaku);
                 }
-                // System.out.println(vstup.get(i));
+                //System.out.println(vstup.get(i));
             }
+            System.out.println("");
         } catch (IndexOutOfBoundsException ex) {
             if (source.charAt(0) == '-' && source.length() == 1) {
                 g.drawString("-", startX, startY);

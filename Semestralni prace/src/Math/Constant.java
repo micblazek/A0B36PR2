@@ -4,6 +4,7 @@
  */
 package Math;
 
+import GUI.BoundingBox;
 import GUI.DisplejNumber;
 import System.MathList;
 import java.util.ArrayList;
@@ -45,8 +46,7 @@ public class Constant extends Expr {
             return Integer.toString((int)constant);
         }else{
             return Double.toString(constant);
-        }
-        
+        }       
         //return Double.toString(constant);
     }
 
@@ -62,5 +62,35 @@ public class Constant extends Expr {
         MathList<DisplejNumber> list = new MathList<DisplejNumber>();
         list.add(new DisplejNumber(this.toString(), BinOp.xGeometrickaRada(delka, postupX), BinOp.yGeometrickaRada(hloubka, postupY)));
         return list;
+    }
+    
+    @Override
+    public BoundingBox getBoundingBox(){
+        return new BoundingBox(this, 0, 0, this.length(), 1);
+    }
+
+    @Override
+    public BoundingBox getBoundingBox(int x, int y) {
+        return new BoundingBox(this, x, y, this.length(), 1);
+    }   
+
+    @Override
+    public int length() {
+        return this.toString().length();
+    }
+
+    @Override
+    public int missingItemInBinOp() {
+        return 1;
+    }
+
+    @Override
+    public int missingItemInBinOp(int hloubka) {
+        return 1;
+    }
+
+    @Override
+    public boolean containNull() {
+      return false;
     }
 }

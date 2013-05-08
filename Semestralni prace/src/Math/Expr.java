@@ -1,5 +1,6 @@
 package Math;
 
+import GUI.BoundingBox;
 import GUI.DisplejNumber;
 import System.MathList;
 import java.util.ArrayList;
@@ -72,4 +73,16 @@ public abstract class Expr {
     public abstract MathList<DisplejNumber> ohodnot();
     
     public abstract MathList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka);
+    
+    public abstract BoundingBox getBoundingBox();
+    
+    public abstract BoundingBox getBoundingBox(int x, int y);
+    
+    public abstract int length();
+    
+    public abstract int missingItemInBinOp();
+    
+    public abstract int missingItemInBinOp(int hloubka);
+    
+    public abstract boolean containNull();
 }

@@ -4,6 +4,7 @@
  */
 package Math;
 
+import GUI.BoundingBox;
 import GUI.DisplejNumber;
 import System.MathList;
 import java.util.ArrayList;
@@ -46,5 +47,35 @@ public class NullSymbol extends Expr {
         MathList<DisplejNumber> list = new MathList<DisplejNumber>();
         list.add(new DisplejNumber(this.toString(), BinOp.xGeometrickaRada(delka, postupX), BinOp.yGeometrickaRada(hloubka, postupY)));
         return list;
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return new BoundingBox(this, 0, 0, 0, 0);
+    }
+
+    @Override
+    public BoundingBox getBoundingBox(int x, int y) {
+        return new BoundingBox(this, x, y, 0, 0);
+    }   
+
+    @Override
+    public int length() {
+        return 0;
+    }
+
+    @Override
+    public int missingItemInBinOp() {
+        return 1;
+    }
+
+    @Override
+    public int missingItemInBinOp(int hloubka) {
+        return 1;
+    }
+
+    @Override
+    public boolean containNull() {
+        return true;
     }
 }

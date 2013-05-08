@@ -8,12 +8,16 @@ import Math.*;
 import System.MathList;
 import System.Source;
 import java.awt.Graphics;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileView;
+import javax.swing.plaf.basic.BasicComboBoxUI;
 
 /**
  *
@@ -24,6 +28,7 @@ public class Calc extends javax.swing.JFrame {
     public String vstup = new String();
     public String vysledek = new String();
     public int poziceScrolu = 0;
+    boolean zlomek = false;
 
     /**
      * Creates new form main
@@ -41,6 +46,7 @@ public class Calc extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btnRovnase1 = new javax.swing.JButton();
         btn0 = new javax.swing.JButton();
         btn1 = new javax.swing.JButton();
         btn2 = new javax.swing.JButton();
@@ -55,6 +61,15 @@ public class Calc extends javax.swing.JFrame {
         btnRovnase = new javax.swing.JButton();
         btnSmazat = new javax.swing.JButton();
         btnDesetinaTecka = new javax.swing.JButton();
+        Displej = new javax.swing.JPanel(){
+            public void paint(Graphics g){
+                super.paint(g);
+                kresli(g);
+            }
+        };
+        DisplejScrollBar = new javax.swing.JScrollBar();
+        txtVstup = new javax.swing.JTextField();
+        btnSimli = new javax.swing.JButton();
         Operace = new javax.swing.JPanel();
         btnDeleni = new javax.swing.JButton();
         btnPlus = new javax.swing.JButton();
@@ -64,19 +79,18 @@ public class Calc extends javax.swing.JFrame {
         btnZavorkaP = new javax.swing.JButton();
         btnOdmocnina = new javax.swing.JButton();
         btnMinus = new javax.swing.JButton();
-        Displej = new javax.swing.JPanel(){
-            public void paint(Graphics g){
-                super.paint(g);
-                kresli(g);
-            }
-        };
-        DisplejScrollBar = new javax.swing.JScrollBar();
-        txtVstup = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         Menu = new javax.swing.JMenu();
         mNacist = new javax.swing.JMenuItem();
         mUlozit = new javax.swing.JMenuItem();
         mKonec = new javax.swing.JMenuItem();
+
+        btnRovnase1.setText("Siply");
+        btnRovnase1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRovnase1ActionPerformed(evt);
+            }
+        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Racionální kalkulačka");
@@ -181,6 +195,51 @@ public class Calc extends javax.swing.JFrame {
             }
         });
 
+        Displej.setBackground(new java.awt.Color(255, 255, 255));
+        Displej.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Displej.setFocusCycleRoot(true);
+        Displej.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
+
+        DisplejScrollBar.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
+        DisplejScrollBar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                DisplejScrollBarMouseReleased(evt);
+            }
+        });
+
+        org.jdesktop.layout.GroupLayout DisplejLayout = new org.jdesktop.layout.GroupLayout(Displej);
+        Displej.setLayout(DisplejLayout);
+        DisplejLayout.setHorizontalGroup(
+            DisplejLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(DisplejScrollBar, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        DisplejLayout.setVerticalGroup(
+            DisplejLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, DisplejLayout.createSequentialGroup()
+                .add(0, 209, Short.MAX_VALUE)
+                .add(DisplejScrollBar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+        );
+
+        DisplejScrollBar.getAccessibleContext().setAccessibleDescription("");
+
+        txtVstup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtVstupActionPerformed(evt);
+            }
+        });
+        txtVstup.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtVstupKeyReleased(evt);
+            }
+        });
+
+        btnSimli.setText("Simply");
+        btnSimli.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSimliActionPerformed(evt);
+            }
+        });
+
         Operace.setBackground(new java.awt.Color(204, 204, 204));
         Operace.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -264,7 +323,7 @@ public class Calc extends javax.swing.JFrame {
                             .add(btnZavorkaP, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .add(btnMocnina, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(btnOdmocnina, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         OperaceLayout.setVerticalGroup(
             OperaceLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -282,48 +341,10 @@ public class Calc extends javax.swing.JFrame {
                     .add(btnZavorkaP))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(btnMocnina)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(btnOdmocnina)
-                .addContainerGap())
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(btnOdmocnina, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(33, Short.MAX_VALUE))
         );
-
-        Displej.setBackground(new java.awt.Color(255, 255, 255));
-        Displej.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        Displej.setFocusCycleRoot(true);
-        Displej.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
-
-        DisplejScrollBar.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
-        DisplejScrollBar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                DisplejScrollBarMouseReleased(evt);
-            }
-        });
-
-        org.jdesktop.layout.GroupLayout DisplejLayout = new org.jdesktop.layout.GroupLayout(Displej);
-        Displej.setLayout(DisplejLayout);
-        DisplejLayout.setHorizontalGroup(
-            DisplejLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(DisplejScrollBar, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        DisplejLayout.setVerticalGroup(
-            DisplejLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, DisplejLayout.createSequentialGroup()
-                .add(0, 139, Short.MAX_VALUE)
-                .add(DisplejScrollBar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-        );
-
-        DisplejScrollBar.getAccessibleContext().setAccessibleDescription("");
-
-        txtVstup.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtVstupActionPerformed(evt);
-            }
-        });
-        txtVstup.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtVstupKeyReleased(evt);
-            }
-        });
 
         Menu.setText("Soubor");
 
@@ -362,59 +383,56 @@ public class Calc extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                        .add(layout.createSequentialGroup()
-                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(layout.createSequentialGroup()
-                                    .add(1, 1, 1)
-                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                                        .add(layout.createSequentialGroup()
-                                            .add(btn4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                            .add(btn5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                            .add(btn6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                        .add(layout.createSequentialGroup()
-                                            .add(btn7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                            .add(btn8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                            .add(5, 5, 5)
-                                            .add(btn9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                        .add(layout.createSequentialGroup()
-                                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                                .add(layout.createSequentialGroup()
-                                                    .add(btn1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                                    .add(btn2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                                .add(layout.createSequentialGroup()
-                                                    .add(btn0, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                                    .add(btnDesetinaTecka, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                                .add(btnSmazat, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                                .add(btn3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
-                                .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                    .add(Displej, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                            .add(layout.createSequentialGroup()
+                                .add(btn4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(btn5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(btn6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(layout.createSequentialGroup()
+                                .add(btn7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(btn8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(5, 5, 5)
+                                .add(btn9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(layout.createSequentialGroup()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(layout.createSequentialGroup()
+                                        .add(btn1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(btn2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                    .add(layout.createSequentialGroup()
+                                        .add(btn0, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(btnDesetinaTecka, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(btnSmazat, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(btn3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                     .add(btnRovnase, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(btnClean, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                            .add(Operace, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .add(txtVstup))
-                    .add(Displej, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .add(btnSimli, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(btnClean, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(Operace, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, txtVstup))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(txtVstup, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(Displej, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 18, Short.MAX_VALUE)
+                .add(Displej, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
-                        .add(2, 2, 2)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(btn9)
                             .add(btn8)
@@ -437,9 +455,10 @@ public class Calc extends javax.swing.JFrame {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(btnClean)
-                            .add(btnRovnase)))
-                    .add(Operace, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 171, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(15, 15, 15))
+                            .add(btnSimli))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(btnRovnase))
+                    .add(Operace, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
         );
 
         Displej.getAccessibleContext().setAccessibleName("");
@@ -451,7 +470,7 @@ public class Calc extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void NumAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NumAction
-        vstup += evt.getActionCommand();     
+        vstup += evt.getActionCommand();
         txtVstup.setText(vstup);
         Displej.repaint();
     }//GEN-LAST:event_NumAction
@@ -508,28 +527,28 @@ public class Calc extends javax.swing.JFrame {
 
     private void mUlozitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mUlozitActionPerformed
         JFileChooser uloz = new JFileChooser();
-        uloz.setDialogTitle("Uložit jako...");  
+        uloz.setDialogTitle("Uložit jako...");
         int n = uloz.showOpenDialog(uloz);
         try {
-            Source.saveAsFile(uloz.getSelectedFile().toString()+".txt", vstup + " = " + vysledek);
+            Source.saveAsFile(uloz.getSelectedFile().toString() + ".txt", vstup + " = " + vysledek);
         } catch (Exception e) {
         }
-        
+
     }//GEN-LAST:event_mUlozitActionPerformed
 
     private void mNacistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mNacistActionPerformed
         JFileChooser nacti = new JFileChooser();
         nacti.setDialogTitle("Načíst jako...");
         int n = nacti.showOpenDialog(nacti);
-        try{
-        vstup = Source.loadFile(nacti.getSelectedFile().toString());
-        }catch(NullPointerException npe){
+        try {
+            vstup = Source.loadFile(nacti.getSelectedFile().toString());
+        } catch (NullPointerException npe) {
             nacti.hide();
             vstup = "0";
         }
         txtVstup.setText(vstup);
-        
-         MathList input;
+
+        MathList input;
         input = new MathList().fillColection(vstup);
         try {
             if (input.textControl()) {
@@ -564,8 +583,7 @@ public class Calc extends javax.swing.JFrame {
         poziceScrolu = DisplejScrollBar.getValue();
         Displej.repaint();
     }//GEN-LAST:event_DisplejScrollBarMouseReleased
-    boolean jmenovatel = false;
-    boolean zlomek = false;
+
     private void txtVstupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtVstupActionPerformed
         vstup = txtVstup.getText();
         Displej.repaint();
@@ -575,6 +593,42 @@ public class Calc extends javax.swing.JFrame {
         vstup = txtVstup.getText();
         Displej.repaint();
     }//GEN-LAST:event_txtVstupKeyReleased
+
+    private void btnRovnase1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRovnase1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnRovnase1ActionPerformed
+
+    private void btnSimliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimliActionPerformed
+        if (zlomek && vstup.charAt(vstup.length() - 1) != ')') {
+            vstup += ')';
+        }
+        MathList input;
+        input = new MathList().fillColection(vstup);
+        try {
+            if (input.textControl()) {
+                if (input.bracers()) {
+                    txtVstup.setText((BinOp.fromArrayList(input).simplify()).toString());
+                    vstup = txtVstup.getText();
+                    Displej.repaint();
+                } else {
+                    vysledek = "Chybná syntaxe, zkontroluj závorky.";
+                    Displej.repaint();
+                }
+            } else {
+                vysledek = "V zadání je nepodporovaný znak.";
+                Displej.repaint();
+            }
+        } catch (NumberFormatException ex) {
+            vysledek = "Chyba vstupních dat.";
+            Displej.repaint();
+        } catch (ArrayIndexOutOfBoundsException ey) {
+            vysledek = "Chyba vstupních dat.";
+            Displej.repaint();
+        } catch (ClassCastException ez) {
+            vysledek = "Chyba vstupních dat.";
+            Displej.repaint();
+        }
+    }//GEN-LAST:event_btnSimliActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -614,6 +668,21 @@ public class Calc extends javax.swing.JFrame {
         Grafic a = new Grafic();
         a.drawSource(vstup, poziceScrolu, Displej, DisplejScrollBar, g);
         a.drawResult(vysledek, poziceScrolu, Displej, DisplejScrollBar, g);
+        txtVstup.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
+        btnOdmocnina.setVisible(false);
+        btnMocnina.setVisible(false);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Displej;
@@ -639,6 +708,8 @@ public class Calc extends javax.swing.JFrame {
     private javax.swing.JButton btnOdmocnina;
     private javax.swing.JButton btnPlus;
     private javax.swing.JButton btnRovnase;
+    private javax.swing.JButton btnRovnase1;
+    private javax.swing.JButton btnSimli;
     private javax.swing.JButton btnSmazat;
     private javax.swing.JButton btnZavorkaL;
     private javax.swing.JButton btnZavorkaP;

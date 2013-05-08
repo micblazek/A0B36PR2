@@ -4,10 +4,13 @@
  */
 package Math;
 
+import GUI.BoundingBox;
 import GUI.DisplejFraction;
 import GUI.DisplejNumber;
 import System.MathList;
+import System.XCompareMathList;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  *
@@ -349,13 +352,35 @@ public class BinOp extends Expr {
              * Přidá operand dělení mezi čitatele a jmenovatele
              */
             int delkaZlomkoveCary = 1;
-            if (this.c1.delkaBinOps() > this.c2.delkaBinOps()) {
+            int xZlomek = 0;
+            if (this.c1.length() > this.c2.length()) {
                 //delkaZlomkoveCary = this.c1.delkaBinOps()*4-1;
-                delkaZlomkoveCary = (int) (2 * Math.pow(2, this.c1.delkaBinOps()) - 1);
+//                delkaZlomkoveCary = (int) (2 * Math.pow(2, this.c1.delkaBinOps()) - 1);
+                delkaZlomkoveCary = c1.length();
+                MathList<DisplejNumber> m = c1.ohodnot(postupX, delka, postupY, hloubka);
+                Collections.sort(m, new XCompareMathList());
+                xZlomek = m.get(0).getX();
+                
+                //xZlomek = xGeometrickaRada(delka, postupX)-c1.missingItemInBinOp();
             } else {
-                delkaZlomkoveCary = (int) (2 * Math.pow(2, this.c2.delkaBinOps()) - 1);
+                MathList<DisplejNumber> m = c2.ohodnot(postupX, delka, postupY, hloubka);
+                Collections.sort(m, new XCompareMathList());
+                xZlomek = m.get(0).getX();
+                delkaZlomkoveCary = c2.length();
+               // xZlomek = xGeometrickaRada(delka, postupX)-c2.missingItemInBinOp();
+//                delkaZlomkoveCary = (int) (2 * Math.pow(2, this.c2.delkaBinOps()) - 1);
             }
-            list.add(new DisplejFraction(Character.toString(this.operand), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY), delkaZlomkoveCary));
+//            if((c2.length()==0 || c2.length()<c1.length()) && c1.getClass().equals(BinOp.class)){
+//                if(((BinOp)c1).c1.missingItemInBinOp()<((BinOp)c1).c2.missingItemInBinOp()){
+//                    xZlomek = xGeometrickaRada(delka, postupX)-((BinOp)c1).c1.missingItemInBinOp();
+//                }else{
+//                    xZlomek = xGeometrickaRada(delka, postupX)-((BinOp)c1).c2.missingItemInBinOp();
+//                }
+//            }
+            
+            list.add(new DisplejFraction(Character.toString(this.operand), xZlomek, yGeometrickaRada(hloubka, postupY), delkaZlomkoveCary));
+            //System.out.println(new DisplejFraction(Character.toString(this.operand), xZlomek, yGeometrickaRada(hloubka, postupY), delkaZlomkoveCary));
+            //list.add(new DisplejFraction(Character.toString(this.operand), xGeometrickaRada(delka, postupX)-this.missingItemInBinOp(), yGeometrickaRada(hloubka, postupY), delkaZlomkoveCary));
             /*
              * Vytváření čitatele
              */
@@ -394,7 +419,7 @@ public class BinOp extends Expr {
             if (this.operand == '^') {
                 /*
                  * Vytváření mocněnce
-                 */                
+                 */
                 if (this.c1.getClass().equals(new BinOp().getClass()) || (this.c1.getClass().equals(new Bracers().getClass()))) {
                     postupY.add('-');
                     if (this.c1.getClass().equals(new BinOp().getClass())) {
@@ -409,7 +434,7 @@ public class BinOp extends Expr {
                     list.add(new DisplejNumber(this.c1.toString(), xGeometrickaRada(delka, postupX), yGeometrickaRada(hloubka, postupY)));
                 }
                 postupY.remove(postupY.size() - 1);
-                
+
                 list.add(new DisplejNumber("^", 0, 0));
                 /*
                  * Vytváření mocnitele
@@ -501,5 +526,73 @@ public class BinOp extends Expr {
             }
         }
         return g;
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        if (operand == '/') {
+            if (this.c1.toString().length() > this.c2.toString().length()) {
+                return new BoundingBox(this, 0, 0, this.c1.length(), 2);
+            } else {
+                return new BoundingBox(this, 0, 0, this.c2.length(), 2);
+            }
+        } else {
+            return new BoundingBox(this, 0, 0, this.length(), 1);
+        }
+    }
+
+    @Override
+    public BoundingBox getBoundingBox(int x, int y) {
+        if (operand == '/') {
+            if (this.c1.toString().length() > this.c2.toString().length()) {
+                return new BoundingBox(this, x, y, this.c1.length(), 2);
+            } else {
+                return new BoundingBox(this, x, y, this.c2.length(), 2);
+            }
+        } else {
+            return new BoundingBox(this, x, y, this.length(), 1);
+        }
+    }
+
+    @Override
+    public int length() {
+        if (operand == '/') {
+            if (this.c1.toString().length() > this.c2.toString().length()) {
+                return this.c1.length();
+            } else {
+                return this.c2.length();
+            }
+        }else{
+            return c1.length()+c2.length()+1;
+        }
+    }
+
+    @Override
+    public int missingItemInBinOp() {
+        int predpokladanyPocet = (int) Math.pow(2, this.delkaBinOps()+this.hloubkaBinOps());
+        int skutecnost = this.missingItemInBinOp(0);
+        return predpokladanyPocet - skutecnost;
+    }
+
+    @Override
+    public int missingItemInBinOp(int pocitadlo) {
+        int hloubka = pocitadlo;
+        int predpoklad = (int) Math.pow(2, this.delkaBinOps()+this.hloubkaBinOps());
+        if (this.getClass().equals(new BinOp().getClass())) {
+            hloubka++;
+            return this.c1.missingItemInBinOp(hloubka) + this.c2.missingItemInBinOp(hloubka);
+        }
+        if(this.getClass().equals(new Bracers().getClass())){
+            return this.missingItemInBinOp(pocitadlo);
+        }
+        return hloubka;
+    }
+    @Override
+    public boolean containNull(){
+        if(c1.containNull() || c2.containNull()){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

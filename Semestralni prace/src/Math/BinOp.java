@@ -97,10 +97,10 @@ public class BinOp extends Expr {
                     if (x1.evaluate() == 0) {
                         return x2;
                     }
-                    if ("Math.Constant".equals(x2.getClass().getName())) {
-                        if (x2.evaluate() == 0) {
-                            return x1;
-                        }
+                }
+                if ("Math.Constant".equals(x2.getClass().getName())) {
+                    if (x2.evaluate() == 0) {
+                        return x1;
                     }
                 }
                 break;
@@ -108,15 +108,15 @@ public class BinOp extends Expr {
             case '-': {
                 if ("Math.Constant".equals(x1.getClass().getName())) {
                     if (x1.evaluate() == 0) {
-                        return x2;
+                        return new BinOp('-', new NullSymbol(), x2);
                     }
-                    if ("Math.Constant".equals(x2.getClass().getName())) {
-                        if (x2.evaluate() == 0) {
-                            return x1;
-                        }
-                    }
-                    break;
                 }
+                if ("Math.Constant".equals(x2.getClass().getName())) {
+                    if (x2.evaluate() == 0) {
+                        return x1;
+                    }
+                }
+                break;
             }
             case '*': {
                 if ("Math.Constant".equals(x1.getClass().getName())) {
@@ -141,7 +141,6 @@ public class BinOp extends Expr {
                         return x1;
                     }
                 }
-
                 break;
 
             }
@@ -149,6 +148,16 @@ public class BinOp extends Expr {
                 if ("Math.Constant".equals(x1.getClass().getName())) {
                     if (x1.evaluate() == 0) {
                         return new Constant(0);
+                    }
+                }
+                if ("Math.Constant".equals(x1.getClass().getName())) {
+                    if (x1.evaluate() == 1) {
+                        return this;
+                    }
+                }
+                if ("Math.Constant".equals(x2.getClass().getName())) {
+                    if (x2.evaluate() == 0) {
+                        return this;
                     }
                 }
                 if ("Math.Constant".equals(x2.getClass().getName())) {
@@ -179,8 +188,6 @@ public class BinOp extends Expr {
                     }
                 }
             }
-
-
         }
         if ("Math.Constant".equals(x2.getClass().getName()) && "Math.Constant".equals(x1.getClass().getName())) {
             return new Constant(new BinOp(operand, x1, x2).evaluate());
@@ -360,14 +367,14 @@ public class BinOp extends Expr {
                 MathList<DisplejNumber> m = c1.ohodnot(postupX, delka, postupY, hloubka);
                 Collections.sort(m, new XCompareMathList());
                 xZlomek = m.get(0).getX();
-                
+
                 //xZlomek = xGeometrickaRada(delka, postupX)-c1.missingItemInBinOp();
             } else {
                 MathList<DisplejNumber> m = c2.ohodnot(postupX, delka, postupY, hloubka);
                 Collections.sort(m, new XCompareMathList());
                 xZlomek = m.get(0).getX();
                 delkaZlomkoveCary = c2.length();
-               // xZlomek = xGeometrickaRada(delka, postupX)-c2.missingItemInBinOp();
+                // xZlomek = xGeometrickaRada(delka, postupX)-c2.missingItemInBinOp();
 //                delkaZlomkoveCary = (int) (2 * Math.pow(2, this.c2.delkaBinOps()) - 1);
             }
 //            if((c2.length()==0 || c2.length()<c1.length()) && c1.getClass().equals(BinOp.class)){
@@ -377,7 +384,7 @@ public class BinOp extends Expr {
 //                    xZlomek = xGeometrickaRada(delka, postupX)-((BinOp)c1).c2.missingItemInBinOp();
 //                }
 //            }
-            
+
             list.add(new DisplejFraction(Character.toString(this.operand), xZlomek, yGeometrickaRada(hloubka, postupY), delkaZlomkoveCary));
             //System.out.println(new DisplejFraction(Character.toString(this.operand), xZlomek, yGeometrickaRada(hloubka, postupY), delkaZlomkoveCary));
             //list.add(new DisplejFraction(Character.toString(this.operand), xGeometrickaRada(delka, postupX)-this.missingItemInBinOp(), yGeometrickaRada(hloubka, postupY), delkaZlomkoveCary));
@@ -562,14 +569,14 @@ public class BinOp extends Expr {
             } else {
                 return this.c2.length();
             }
-        }else{
-            return c1.length()+c2.length()+1;
+        } else {
+            return c1.length() + c2.length() + 1;
         }
     }
 
     @Override
     public int missingItemInBinOp() {
-        int predpokladanyPocet = (int) Math.pow(2, this.delkaBinOps()+this.hloubkaBinOps());
+        int predpokladanyPocet = (int) Math.pow(2, this.delkaBinOps() + this.hloubkaBinOps());
         int skutecnost = this.missingItemInBinOp(0);
         return predpokladanyPocet - skutecnost;
     }
@@ -577,22 +584,37 @@ public class BinOp extends Expr {
     @Override
     public int missingItemInBinOp(int pocitadlo) {
         int hloubka = pocitadlo;
-        int predpoklad = (int) Math.pow(2, this.delkaBinOps()+this.hloubkaBinOps());
+        int predpoklad = (int) Math.pow(2, this.delkaBinOps() + this.hloubkaBinOps());
         if (this.getClass().equals(new BinOp().getClass())) {
             hloubka++;
             return this.c1.missingItemInBinOp(hloubka) + this.c2.missingItemInBinOp(hloubka);
         }
-        if(this.getClass().equals(new Bracers().getClass())){
+        if (this.getClass().equals(new Bracers().getClass())) {
             return this.missingItemInBinOp(pocitadlo);
         }
         return hloubka;
     }
+
     @Override
-    public boolean containNull(){
-        if(c1.containNull() || c2.containNull()){
+    public boolean containNull() {
+        if (c1.containNull() || c2.containNull()) {
             return true;
-        }else{
+        } else {
             return false;
         }
+    }
+
+    @Override
+    public MathList<Variable> variablesInList() {
+        MathList<Variable> list = new MathList<Variable>();
+        list.addAll(c1.variablesInList());
+        list.addAll(c2.variablesInList());
+        return list;
+    }
+
+    @Override
+    public void changeVariable(Variable v) {
+        this.c1.changeVariable(v);
+        this.c2.changeVariable(v);
     }
 }

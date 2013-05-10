@@ -78,4 +78,13 @@ public class NullSymbol extends Expr {
     public boolean containNull() {
         return true;
     }
+
+    @Override
+    public MathList<Variable> variablesInList() {
+        return new MathList<Variable>();
+    }
+
+    @Override
+    public void changeVariable(Variable v) {       
+    }
 }

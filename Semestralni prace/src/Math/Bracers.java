@@ -55,23 +55,28 @@ public class Bracers extends Expr {
         } else {
             if (this.value.getClass() == Constant.class) {
                 return ((Constant) this.value).ohodnot();
-            }else
-                if(this.value.getClass() == NullSymbol.class){
-                    return ((NullSymbol) this.value).ohodnot();
-                }else{
-                return ((Bracers) this.value).ohodnot();
-        }}
+            } else if (this.value.getClass() == NullSymbol.class) {
+                return ((NullSymbol) this.value).ohodnot();
+            } else {
+                if (this.value.getClass() == Variable.class) {
+                    return ((Variable) this.value).ohodnot();
+                } else {
+                    return ((Bracers) this.value).ohodnot();
+                }
+            }
+        }
     }
 
     @Override
     public MathList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
-         if (this.value.getClass() == BinOp.class) {
+        if (this.value.getClass() == BinOp.class) {
             return ((BinOp) this.value).ohodnot(postupX, delka, postupY, hloubka);
         } else {
             if (this.value.getClass() == Constant.class) {
                 return ((Constant) this.value).ohodnot(postupX, delka, postupY, hloubka);
-            }else
+            } else {
                 return ((Bracers) this.value).ohodnot();
+            }
         }
     }
 
@@ -104,5 +109,14 @@ public class Bracers extends Expr {
     public boolean containNull() {
         return value.containNull();
     }
-    
+
+    @Override
+    public MathList<Variable> variablesInList() {
+        return value.variablesInList();
+    }
+
+    @Override
+    public void changeVariable(Variable v) {
+        this.value.changeVariable(v);
+    }
 }

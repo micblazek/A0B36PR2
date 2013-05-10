@@ -27,7 +27,7 @@ import javax.swing.JScrollBar;
 public class Grafic {
 
     private int vyskaZnaku = 14;
-    private int sirkaZnaku = 14;
+    private int sirkaZnaku = 12;
 
     public void drawSource(Expr source, int Scrol, JPanel panel, JScrollBar bar, Graphics g) {
         Grafic a = new Grafic();
@@ -42,9 +42,6 @@ public class Grafic {
     public void drawSource(String source, int Scrol, JPanel panel, JScrollBar bar, Graphics g) {
         int startY = panel.getHeight() / 4;
         int startX = 40;
-
-//        g.drawRect(50, 10, 40, 20);
-//        g.drawString("55", 50, 10+vyskaZnaku);
 
         if (source.isEmpty()) {
             source = "0";
@@ -67,8 +64,8 @@ public class Grafic {
 
             //Posunutí pomocí baru
             Expr e = ((new MathList()).fillColection(source).fromMathList());
-            if (e.delkaBinOps() * 3 * nejdelsiBunka(vstup) * sirkaZnaku + 20 > panel.getWidth()) {
-                startX -= bar.getValue() * 2 * e.delkaBinOps() * nejdelsiBunka * sirkaZnaku / 100;
+            if (e.length() *sirkaZnaku + 40 > panel.getWidth()) {
+                startX -= bar.getValue() / 100.0 * e.length() * sirkaZnaku - panel.WIDTH;
                 bar.setVisible(true);
             } else {
                 bar.setVisible(false);
@@ -86,18 +83,18 @@ public class Grafic {
                         System.out.println((startY - vstup.get(i).getY() * vyskaZnaku - vyskaZnaku / 2) + " " + (startY - vstup.get(i).getY() * vyskaZnaku - vyskaZnaku / 2));
                         System.out.println(vstup.get(i));
                         break;
-                    case '^':
-                        try {
-                            vstup.set(i + 1, new DisplejNumber(vstup.get(i + 1).getValue(), vstup.get(i + 1).getX(), vstup.get(i + 1).getY() - 1));
-                        } catch (NumberFormatException nfe) {
-                            // když není, nevadí
-                        }
-                        break;
+//                    case '^':
+//                        try {
+//                            vstup.set(i + 1, new DisplejNumber(vstup.get(i + 1).getValue(), vstup.get(i + 1).getX(), vstup.get(i + 1).getY() - 1));
+//                        } catch (NumberFormatException nfe) {
+//                            // když není, nevadí
+//                        }
+//                        break;
                     default:
                         g.drawString(vstup.get(i).getValue(), vstup.get(i).getX() * sirkaZnaku + startX, startY - vstup.get(i).getY() * vyskaZnaku);
-                       // g.drawString(vstup.get(i).getValue(), vstup.get(i).getX() * nejdelsiBunka + startX + nejdelsiBunka / 2 - vstup.get(i).getValue().length() * sirkaZnaku / 2, startY - vstup.get(i).getY() * vyskaZnaku);
+
                 }
-                //System.out.println(vstup.get(i));
+//                System.out.println(vstup.get(i));
             }
             System.out.println("");
         } catch (IndexOutOfBoundsException ex) {

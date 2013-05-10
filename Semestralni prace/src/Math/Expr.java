@@ -85,4 +85,9 @@ public abstract class Expr {
     public abstract int missingItemInBinOp(int hloubka);
     
     public abstract boolean containNull();
+    
+    public abstract MathList<Variable> variablesInList();
+    
+    public abstract void changeVariable(Variable v);
+    
 }

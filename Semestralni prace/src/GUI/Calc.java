@@ -11,9 +11,17 @@ import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileView;
@@ -29,11 +37,15 @@ public class Calc extends javax.swing.JFrame {
     public String vysledek = new String();
     public int poziceScrolu = 0;
     boolean zlomek = false;
+    boolean vari = false;
+    VariableFrame f = new VariableFrame(this.getX() + this.getWidth(), this.getY(), 150, this.getHeight());
+    Expr v;
 
     /**
      * Creates new form main
      */
     public Calc() {
+        f.setVisible(false);
         initComponents();
     }
 
@@ -47,6 +59,8 @@ public class Calc extends javax.swing.JFrame {
     private void initComponents() {
 
         btnRovnase1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
         btn0 = new javax.swing.JButton();
         btn1 = new javax.swing.JButton();
         btn2 = new javax.swing.JButton();
@@ -69,7 +83,7 @@ public class Calc extends javax.swing.JFrame {
         };
         DisplejScrollBar = new javax.swing.JScrollBar();
         txtVstup = new javax.swing.JTextField();
-        btnSimli = new javax.swing.JButton();
+        btnSimply = new javax.swing.JButton();
         Operace = new javax.swing.JPanel();
         btnDeleni = new javax.swing.JButton();
         btnPlus = new javax.swing.JButton();
@@ -79,6 +93,7 @@ public class Calc extends javax.swing.JFrame {
         btnZavorkaP = new javax.swing.JButton();
         btnOdmocnina = new javax.swing.JButton();
         btnMinus = new javax.swing.JButton();
+        btnVariable = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         Menu = new javax.swing.JMenu();
         mNacist = new javax.swing.JMenuItem();
@@ -92,10 +107,28 @@ public class Calc extends javax.swing.JFrame {
             }
         });
 
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Racionální kalkulačka");
         setLocationByPlatform(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
 
         btn0.setText("0");
         btn0.addActionListener(new java.awt.event.ActionListener() {
@@ -233,10 +266,10 @@ public class Calc extends javax.swing.JFrame {
             }
         });
 
-        btnSimli.setText("Simply");
-        btnSimli.addActionListener(new java.awt.event.ActionListener() {
+        btnSimply.setText("Simply");
+        btnSimply.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSimliActionPerformed(evt);
+                btnSimplyActionPerformed(evt);
             }
         });
 
@@ -301,6 +334,13 @@ public class Calc extends javax.swing.JFrame {
             }
         });
 
+        btnVariable.setText("Variable");
+        btnVariable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVariableActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout OperaceLayout = new org.jdesktop.layout.GroupLayout(Operace);
         Operace.setLayout(OperaceLayout);
         OperaceLayout.setHorizontalGroup(
@@ -322,7 +362,8 @@ public class Calc extends javax.swing.JFrame {
                             .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                             .add(btnZavorkaP, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .add(btnMocnina, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(btnOdmocnina, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(btnOdmocnina, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(btnVariable, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         OperaceLayout.setVerticalGroup(
@@ -343,7 +384,9 @@ public class Calc extends javax.swing.JFrame {
                 .add(btnMocnina)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(btnOdmocnina, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(btnVariable)
+                .addContainerGap())
         );
 
         Menu.setText("Soubor");
@@ -415,7 +458,7 @@ public class Calc extends javax.swing.JFrame {
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                     .add(btnRovnase, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(btnSimli, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                    .add(btnSimply, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(btnClean, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -426,11 +469,10 @@ public class Calc extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(txtVstup, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(Displej, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
@@ -455,7 +497,7 @@ public class Calc extends javax.swing.JFrame {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(btnClean)
-                            .add(btnSimli))
+                            .add(btnSimply))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnRovnase))
                     .add(Operace, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
@@ -489,26 +531,41 @@ public class Calc extends javax.swing.JFrame {
         MathList input;
         input = new MathList().fillColection(vstup);
         try {
-            if (input.textControl()) {
-                if (input.bracers()) {
-                    vysledek = Double.toString(BinOp.fromArrayList(input).evaluate());
-                    Displej.repaint();
-                } else {
-                    vysledek = "Chybná syntaxe, zkontroluj závorky.";
-                    Displej.repaint();
+            if (input.bracers()) {
+                try {
+                    MathList<Variable> var = f.VariableList();
+                    v = (new MathList()).fillColection(vstup).fromMathList();
+                    for (int i = 0; i < var.size(); i++) {
+                        v.changeVariable(var.get(i));
+                    }
+                    var.clear();
+                    var.addAll(v.variablesInList().reductionDuplicates());
+                    f.setTable(var);
+                } catch (IndexOutOfBoundsException ex) {
+                } catch (VstupException ex) {
+                    Logger.getLogger(Calc.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                vysledek = Double.toString(v.evaluate());
+                Displej.repaint();
             } else {
-                vysledek = "V zadání je nepodporovaný znak.";
+                vysledek = "Chybná syntaxe, zkontroluj závorky.";
                 Displej.repaint();
             }
         } catch (NumberFormatException ex) {
             vysledek = "Chyba vstupních dat.";
+            System.out.println("NumberFormatException");
             Displej.repaint();
         } catch (ArrayIndexOutOfBoundsException ey) {
             vysledek = "Chyba vstupních dat.";
+            System.out.println("ArrayIndexOutOfBoundsException");
             Displej.repaint();
         } catch (ClassCastException ez) {
             vysledek = "Chyba vstupních dat.";
+            System.out.println("ClassCastException");
+            Displej.repaint();
+        } catch (IndexOutOfBoundsException ex) {
+            vysledek = "Chyba vstupních dat.";
+            System.out.println("IndexOutOfBoundsException");
             Displej.repaint();
         }
     }//GEN-LAST:event_btnRovnaseActionPerformed
@@ -548,31 +605,37 @@ public class Calc extends javax.swing.JFrame {
         }
         txtVstup.setText(vstup);
 
-        MathList input;
-        input = new MathList().fillColection(vstup);
-        try {
-            if (input.textControl()) {
-                if (input.bracers()) {
-                    vysledek = Double.toString(BinOp.fromArrayList(input).evaluate());
-                    Displej.repaint();
-                } else {
-                    vysledek = "Chybná syntaxe, zkontroluj závorky.";
-                    Displej.repaint();
-                }
-            } else {
-                vysledek = "V zadání je nepodporovaný znak.";
-                Displej.repaint();
-            }
-        } catch (NumberFormatException ex) {
-            vysledek = "Chyba vstupních dat.";
-            Displej.repaint();
-        } catch (ArrayIndexOutOfBoundsException ey) {
-            vysledek = "Chyba vstupních dat.";
-            Displej.repaint();
-        } catch (ClassCastException ez) {
-            vysledek = "Chyba vstupních dat.";
-            Displej.repaint();
-        }
+//        MathList input;
+//        input = new MathList().fillColection(vstup);
+//        try {
+//                if (input.bracers()) {
+//                    vysledek = Double.toString(input.fromMathList().evaluate());
+//                    Displej.repaint();
+//                } else {
+//                    vysledek = "Chybná syntaxe, zkontroluj závorky.";
+//                    Displej.repaint();
+//                }
+//        } catch (NumberFormatException ex) {
+//            vysledek = "Chyba vstupních dat.";
+//            System.out.println("NumberFormatException");
+//            Displej.repaint();
+//        } catch (ArrayIndexOutOfBoundsException ey) {
+//            vysledek = "Chyba vstupních dat.";
+//            System.out.println("ArrayIndexOutOfBoundsException");
+//            Displej.repaint();
+//        } catch (ClassCastException ez) {
+//            vysledek = "Chyba vstupních dat.";
+//            System.out.println("ClassCastException");
+//            Displej.repaint();
+//        } catch (IndexOutOfBoundsException ex) {
+//            vysledek = "Chyba vstupních dat.";
+//            System.out.println("IndexOutOfBoundsException");
+//            Displej.repaint();
+//        } catch (VstupException ex) {
+//            vysledek = "Chyba vstupních dat.";
+//            System.out.println("VstupException");
+//            Displej.repaint();
+//        }
     }//GEN-LAST:event_mNacistActionPerformed
 
     private void mKonecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mKonecActionPerformed
@@ -595,40 +658,63 @@ public class Calc extends javax.swing.JFrame {
     }//GEN-LAST:event_txtVstupKeyReleased
 
     private void btnRovnase1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRovnase1ActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_btnRovnase1ActionPerformed
 
-    private void btnSimliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimliActionPerformed
+    private void btnSimplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimplyActionPerformed
         if (zlomek && vstup.charAt(vstup.length() - 1) != ')') {
             vstup += ')';
         }
         MathList input;
         input = new MathList().fillColection(vstup);
         try {
-            if (input.textControl()) {
-                if (input.bracers()) {
-                    txtVstup.setText((BinOp.fromArrayList(input).simplify()).toString());
-                    vstup = txtVstup.getText();
-                    Displej.repaint();
-                } else {
-                    vysledek = "Chybná syntaxe, zkontroluj závorky.";
-                    Displej.repaint();
-                }
+            if (input.bracers()) {
+                txtVstup.setText(input.fromMathList().simplify().toString());
+                vstup = txtVstup.getText();
+                Displej.repaint();
             } else {
-                vysledek = "V zadání je nepodporovaný znak.";
+                vysledek = "Chybná syntaxe, zkontroluj závorky.";
                 Displej.repaint();
             }
         } catch (NumberFormatException ex) {
             vysledek = "Chyba vstupních dat.";
+            System.out.println("NumberFormatException");
             Displej.repaint();
         } catch (ArrayIndexOutOfBoundsException ey) {
             vysledek = "Chyba vstupních dat.";
+            System.out.println("ArrayIndexOutOfBoundsException");
             Displej.repaint();
         } catch (ClassCastException ez) {
             vysledek = "Chyba vstupních dat.";
+            System.out.println("ClassCastException");
+            Displej.repaint();
+        } catch (IndexOutOfBoundsException ex) {
+            vysledek = "Chyba vstupních dat.";
+            System.out.println("IndexOutOfBoundsException");
+            Displej.repaint();
+        } catch (VstupException ex) {
+            vysledek = "Chyba vstupních dat.";
+            System.out.println("VstupException");
             Displej.repaint();
         }
-    }//GEN-LAST:event_btnSimliActionPerformed
+    }//GEN-LAST:event_btnSimplyActionPerformed
+
+    private void btnVariableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVariableActionPerformed
+        f.setBounds(this.getX() + this.getWidth(), this.getY(), 150, this.getHeight());
+        MathList<Variable> variable = f.VariableList();
+        vari = true;
+        f.repaint();
+        f.setVisible(true);
+    }//GEN-LAST:event_btnVariableActionPerformed
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        if (vari) {
+            f.setBounds(this.getX() + this.getWidth(), this.getY(), 150, this.getHeight());
+            MathList<Variable> variable = f.VariableList();
+            vari = true;
+            f.repaint();
+            f.setVisible(true);
+        }
+    }//GEN-LAST:event_formWindowActivated
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -665,6 +751,7 @@ public class Calc extends javax.swing.JFrame {
     }
 
     public void kresli(Graphics g) {
+
         Grafic a = new Grafic();
         a.drawSource(vstup, poziceScrolu, Displej, DisplejScrollBar, g);
         a.drawResult(vysledek, poziceScrolu, Displej, DisplejScrollBar, g);
@@ -681,6 +768,21 @@ public class Calc extends javax.swing.JFrame {
             public void keyReleased(KeyEvent e) {
             }
         });
+
+        try {
+            MathList<Variable> var = f.VariableList();
+            v = (new MathList()).fillColection(vstup).fromMathList();
+            for (int i = 0; i < var.size(); i++) {
+                v.changeVariable(var.get(i));
+            }
+            var.clear();
+            var.addAll(v.variablesInList().reductionDuplicates());
+            f.setTable(var);
+        } catch (IndexOutOfBoundsException ex) {
+        } catch (VstupException ex) {
+            Logger.getLogger(Calc.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        f.repaint();
         btnOdmocnina.setVisible(false);
         btnMocnina.setVisible(false);
     }
@@ -709,11 +811,14 @@ public class Calc extends javax.swing.JFrame {
     private javax.swing.JButton btnPlus;
     private javax.swing.JButton btnRovnase;
     private javax.swing.JButton btnRovnase1;
-    private javax.swing.JButton btnSimli;
+    private javax.swing.JButton btnSimply;
     private javax.swing.JButton btnSmazat;
+    private javax.swing.JButton btnVariable;
     private javax.swing.JButton btnZavorkaL;
     private javax.swing.JButton btnZavorkaP;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JMenuItem mKonec;
     private javax.swing.JMenuItem mNacist;
     private javax.swing.JMenuItem mUlozit;

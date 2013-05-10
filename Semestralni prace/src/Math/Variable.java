@@ -13,13 +13,14 @@ import java.util.ArrayList;
  *
  * @author michalblazek
  */
-public class Variable extends Expr {
+public class Variable extends Expr implements Comparable<Variable>{
 
     public char name;
     public double value;
 
     public Variable() {
     }
+
     public Variable(char name, double value) {
         this.name = name;
         this.value = value;
@@ -56,27 +57,31 @@ public class Variable extends Expr {
 
     @Override
     public MathList<DisplejNumber> ohodnot() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        MathList<DisplejNumber> list = new MathList<DisplejNumber>();
+        list.add(new DisplejNumber(this.toString(), 0, 0));
+        return list;
     }
 
     @Override
     public MathList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        MathList<DisplejNumber> list = new MathList<DisplejNumber>();
+        list.add(new DisplejNumber(this.toString(), BinOp.xGeometrickaRada(delka, postupX), BinOp.yGeometrickaRada(hloubka, postupY)));
+        return list;
     }
 
     @Override
     public BoundingBox getBoundingBox() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new BoundingBox(this, 0, 0, this.length(), 1);
     }
 
     @Override
     public BoundingBox getBoundingBox(int x, int y) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new BoundingBox(this, x, y, this.length(), 1);
     }
 
     @Override
     public int length() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.toString().length();
     }
 
     @Override
@@ -93,5 +98,23 @@ public class Variable extends Expr {
     public boolean containNull() {
         return false;
     }
-  
+
+    @Override
+    public MathList<Variable> variablesInList() {
+        MathList<Variable> list = new MathList<Variable>();
+        list.add(this);
+        return list;
+    }
+
+    @Override
+    public int compareTo(Variable o) {
+        return this.toString().compareTo(o.toString());
+    }
+
+    @Override
+    public void changeVariable(Variable v) {
+        if(((Character)this.name).equals(((Character)v.name))){
+            this.value = v.value;
+        }    
+    }
 }

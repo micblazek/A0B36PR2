@@ -7,11 +7,7 @@ package System;
 import GUI.DisplejFraction;
 import GUI.DisplejNumber;
 import GUI.VstupException;
-import Math.BinOp;
-import Math.Bracers;
-import Math.Constant;
-import Math.Expr;
-import Math.NullSymbol;
+import Math.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -67,9 +63,15 @@ public class MathList<T> extends ArrayList<T> {
         if (List.size() > 0) {
             // Jestliže je první znak řetězce znak '-', bude první čílso záporné.
             if ((List.get(0).toString().charAt(0) == '-') && List.get(0).toString().length() == 1) {
-                List.add(1, new Constant(Double.valueOf(List.get(1).toString()) * -1));
-                List.remove(0);
-                List.remove(1); // odepbere se index 0, to co bylo index 1 je 0, 2 je 1
+                if (Character.isDefined(List.get(1).toString().charAt(0))) {
+                    List.add(1, new Constant(Double.valueOf(List.get(1).toString()) * -1));
+                    List.remove(0);
+                    List.remove(1); // odepbere se index 0, to co bylo index 1 je 0, 2 je 1
+                } else {
+                    List.add(1, new Variable((List.get(1).toString()).charAt(0), -1));
+                    List.remove(0);
+                    List.remove(1); // odepbere se index 0, to co bylo index 1 je 0, 2 je 1
+                }
             }
 
             if ((List.get(0).toString().charAt(0) == '+') && List.get(0).toString().length() == 1) {
@@ -79,8 +81,11 @@ public class MathList<T> extends ArrayList<T> {
         // Převede čísla v řetězci na konstanty.
         // PROBLÉM
         for (int i = 0; i < List.size(); i++) {
-            if (Character.isDigit(List.get(i).toString().charAt(0)) && List.get(i).getClass().equals(Constant.class) == false) {
+            if (Character.isDigit(List.get(i).toString().charAt(0)) && (List.get(i).getClass().equals(Constant.class) == false || List.get(i).getClass().equals(Variable.class) == false)) {
                 List.set(i, new Constant(Double.valueOf(List.get(i).toString())));
+            }
+            if (Character.isAlphabetic(List.get(i).toString().charAt(0)) && (List.get(i).getClass().equals(Constant.class) == false || List.get(i).getClass().equals(Variable.class) == false)) {
+                List.set(i, new Variable(List.get(i).toString().charAt(0), 1));
             }
         }
 
@@ -218,9 +223,15 @@ public class MathList<T> extends ArrayList<T> {
                         List.set(i, new NullSymbol());
                         List.remove(i - 1);
                     } else {
-                        List.set(i, new BinOp(List.get(i).toString().charAt(0), (Expr) List.get(i - 1), new NullSymbol()));
-                        List.remove(i + 1);
-                        List.remove(i - 1);
+                        if (List.get(i - 1).toString().equals(" ")) {
+                            List.set(i, new BinOp(List.get(i).toString().charAt(0), new NullSymbol(), (Expr) List.get(i + 1)));
+                            List.remove(i + 1);
+                            List.remove(i - 1);
+                        } else {
+                            List.set(i, new BinOp(List.get(i).toString().charAt(0), (Expr) List.get(i - 1), new NullSymbol()));
+                            List.remove(i + 1);
+                            List.remove(i - 1);
+                        }
                     }
                 }
             } else {
@@ -273,15 +284,20 @@ public class MathList<T> extends ArrayList<T> {
          * "ostatní znaky".
          */
         boolean cislo = false;
+        boolean promenna = false;
         MathList list = new MathList();
-        String cast = null;
+        String cast = "";
         /*Cyklus projde celý string, rozlišuje první a další znaky v řetězci.
          */
         for (int i = 0; vstup.length() > i; i++) {
             if (cislo) {
                 cast += vstup.charAt(i);
             } else {
-                cast = Character.toString(vstup.charAt(i));
+                if (promenna) {
+                    cast += vstup.charAt(i);
+                } else {
+                    cast = Character.toString(vstup.charAt(i));
+                }
             }
             /* Jestliže je aktuální řetězec číslo, kontroluje následující znak, zdali není také číslo. 
              * Z důvodu vícemístných čísel.
@@ -289,9 +305,13 @@ public class MathList<T> extends ArrayList<T> {
             if ((i + 1 != vstup.length()) && ((Character.isDigit(vstup.charAt(i))) || vstup.charAt(i) == '.') && ((Character.isDigit(vstup.charAt(i + 1))) || vstup.charAt(i + 1) == '.')) {
                 cislo = true;
             } else {
-                cislo = false;
-                list.add(cast);
-                cast = null;
+                if ((i + 1 != vstup.length()) && (Character.isAlphabetic(vstup.charAt(i))) && (Character.isAlphabetic(vstup.charAt(i + 1))) && ((Character.isDigit(vstup.charAt(i))) || vstup.charAt(i) == '.') == false && ((Character.isDigit(vstup.charAt(i + 1))) || vstup.charAt(i) == '.') == false) {
+                    promenna = true;
+                } else {
+                    promenna = false;
+                    list.add(cast);
+                    cast = "";
+                }
             }
         }
         this.addAll(list);
@@ -324,7 +344,7 @@ public class MathList<T> extends ArrayList<T> {
          * Jestliže vstupní kolekce obsahuje nepodporovaný znak vrátí hodnotu
          * FALSE.
          */
-        char[] podporovaneZnaky = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '-', '*', '/', '^', '(', ')', '.', ' '};
+        char[] podporovaneZnaky = {'+', '-', '*', '/', '^', '(', ')', '.', ' '};
         boolean vystup = false;
         for (int i = 0; i < this.size(); i++) {
             boolean a = false;
@@ -332,7 +352,13 @@ public class MathList<T> extends ArrayList<T> {
                 if (this.get(i).toString().charAt(0) == podporovaneZnaky[j]) {
                     a = true;
                 }
+                if (Character.isAlphabetic(this.get(i).toString().charAt(0)) || Character.isDigit(this.get(i).toString().charAt(0))) {
+                    a = true;
+                }
             }
+
+
+
             if (a) {
                 vystup = true;
                 a = false;
@@ -387,12 +413,27 @@ public class MathList<T> extends ArrayList<T> {
                         list.add(new DisplejNumber(((DisplejNumber) this.get(i)).getValue(), list.get(i - 1).getX() + ((DisplejFraction) list.get(i - 1)).getLenght(), ((DisplejNumber) this.get(i)).getY()));
                     }
                 } else {
-                    list.add(new DisplejFraction(((DisplejNumber) this.get(i)).getValue(), ((DisplejNumber) this.get(i-1)).getX() + ((DisplejNumber) this.get(i - 1)).getValue().toString().length(), ((DisplejNumber) this.get(i)).getY(), ((DisplejFraction) this.get(i)).getLenght()));
+                    list.add(new DisplejFraction(((DisplejNumber) this.get(i)).getValue(), ((DisplejNumber) this.get(i - 1)).getX() + ((DisplejNumber) this.get(i - 1)).getValue().toString().length(), ((DisplejNumber) this.get(i)).getY(), ((DisplejFraction) this.get(i)).getLenght()));
                 }
             } else {
                 list.add(((DisplejNumber) this.get(i)));
             }
         }
         return list;
+    }
+    
+    public MathList reductionDuplicates(){
+        for (int i = 0; i < this.size(); i++) {
+            MathList sublist = new MathList();
+            sublist.addAll(this.subList(i+1, this.size()));
+            for (int j = sublist.size()-1; j >= 0; j--) {
+                if(this.get(i).toString().equals(sublist.get(j).toString())){
+                    this.remove(i+j+1);
+                    
+                }         
+            }
+            
+        }
+        return this;
     }
 }

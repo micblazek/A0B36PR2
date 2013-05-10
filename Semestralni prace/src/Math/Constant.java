@@ -93,4 +93,13 @@ public class Constant extends Expr {
     public boolean containNull() {
       return false;
     }
+
+    @Override
+    public MathList<Variable> variablesInList() {
+        return new MathList<Variable>();
+    }
+
+    @Override
+    public void changeVariable(Variable v) {       
+    }
 }

@@ -4,9 +4,8 @@ Cílem semestrální práce bude vytvořit kalkulačku, která bude provádět v
 
 Vstup bude možné načíst do souboru a opět jej do souboru uložit.
 
-Hlavní částí seminární práce bude grafické rozhraní, které by mělo umět "hezky" zadat psaný výraz, tzn. možnost vytvoření zlomku, odmocniny, mocniny tak jak jsou lidé zvyklí tyto operace zapisovat na papír.
+Hlavní částí seminární práce bude grafické rozhraní, které by mělo umět "hezky" zadat psaný výraz, tzn. možnost vytvoření zlomků  tak jak jsou lidé zvyklí je operace zapisovat na papír.
 
-Pravděpodobně pude nutné omezit vnořování zlomku do zlomku, po dohodě s vyučujícím.
 
 Balíček s názvem GUI bude obsahovat třídy grafického rozhraní.
 

@@ -78,7 +78,13 @@ public abstract class Expr {
     
     public abstract BoundingBox getBoundingBox(int x, int y);
     
+    public abstract MathList<BoundingBox> getAllBoundingBoxs();
+    
+    public abstract MathList<BoundingBox> getAllBoundingBoxs(int x, int y);
+    
     public abstract int length();
+    
+    public abstract int height();
     
     public abstract int missingItemInBinOp();
     

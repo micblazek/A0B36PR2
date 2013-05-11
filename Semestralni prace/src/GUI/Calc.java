@@ -711,8 +711,8 @@ public class Calc extends javax.swing.JFrame {
             f.setBounds(this.getX() + this.getWidth(), this.getY(), 150, this.getHeight());
             MathList<Variable> variable = f.VariableList();
             vari = true;
-            f.repaint();
             f.setVisible(true);
+            f.repaint();
         }
     }//GEN-LAST:event_formWindowActivated
 

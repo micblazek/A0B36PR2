@@ -119,4 +119,19 @@ public class Bracers extends Expr {
     public void changeVariable(Variable v) {
         this.value.changeVariable(v);
     }
+
+    @Override
+    public int height() {
+        return value.height();
+    }
+
+    @Override
+    public MathList<BoundingBox> getAllBoundingBoxs() {
+        return value.getAllBoundingBoxs();
+    }
+
+    @Override
+    public MathList<BoundingBox> getAllBoundingBoxs(int x, int y) {
+        return value.getAllBoundingBoxs(x, y);
+    }
 }

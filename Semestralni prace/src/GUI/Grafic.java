@@ -5,7 +5,9 @@
 package GUI;
 
 import Math.BinOp;
+import Math.Constant;
 import Math.Expr;
+import Math.Variable;
 import System.MathList;
 import System.Source;
 import System.XCompareMathList;
@@ -49,54 +51,22 @@ public class Grafic {
         try {
             MathList<DisplejNumber> vstup = new MathList();
             vstup.fillColection(source);
-            //System.out.println(vstup);
             Expr p = vstup.fromMathList();
-            vstup = p.ohodnot();
-            //System.out.println(vstup);
-            vstup = vstup.normalizuj();
-            //System.out.println(vstup);
-            Collections.sort(vstup, new XCompareMathList());
-            //System.out.println(vstup);
-            vstup = vstup.cleanWhiteSpaceInDisplejNuber();
-            Collections.sort(vstup, new YCompareMathList());
-            vstup = vstup.doSpacing();
-            int nejdelsiBunka = sirkaZnaku * Grafic.nejdelsiBunka(vstup);
+            MathList<BoundingBox> boundlist = p.getAllBoundingBoxs();
 
-            //Posunutí pomocí baru
-            Expr e = ((new MathList()).fillColection(source).fromMathList());
-            if (e.length() *sirkaZnaku + 40 > panel.getWidth()) {
-                startX -= bar.getValue() / 100.0 * e.length() * sirkaZnaku - panel.WIDTH;
-                bar.setVisible(true);
-            } else {
-                bar.setVisible(false);
-            }
-
-            for (int i = 0; i < vstup.size(); i++) {
-                switch (vstup.get(i).getValue().charAt(0)) {
-                    case '/':
-                        int x1 = vstup.get(i).getX() * sirkaZnaku  + startX;
-                        int x2 = vstup.get(i).getX() * sirkaZnaku  + startX + ((DisplejFraction) vstup.get(i)).getLenght() * sirkaZnaku-2;
-                        //int x1 = (int) (vstup.get(i).getX() * nejdelsiBunka + startX + nejdelsiBunka / 2 - vstup.get(i).getValue().length() * sirkaZnaku / 2 - (((DisplejFraction) vstup.get(i)).getLenght() / 2.0) * nejdelsiBunka) + sirkaZnaku / 2;
-                        //int x2 = (int) (vstup.get(i).getX() * nejdelsiBunka + startX + nejdelsiBunka / 2 - vstup.get(i).getValue().length() * sirkaZnaku / 2 + (((DisplejFraction) vstup.get(i)).getLenght() / 2.0) * nejdelsiBunka) + sirkaZnaku / 2 - 2;
-                        g.drawLine(x1, startY - vstup.get(i).getY() * vyskaZnaku - vyskaZnaku / 2, x2, startY - vstup.get(i).getY() * vyskaZnaku - vyskaZnaku / 2);
-                        System.out.println(x1 + " " + x2);
-                        System.out.println((startY - vstup.get(i).getY() * vyskaZnaku - vyskaZnaku / 2) + " " + (startY - vstup.get(i).getY() * vyskaZnaku - vyskaZnaku / 2));
-                        System.out.println(vstup.get(i));
-                        break;
-//                    case '^':
-//                        try {
-//                            vstup.set(i + 1, new DisplejNumber(vstup.get(i + 1).getValue(), vstup.get(i + 1).getX(), vstup.get(i + 1).getY() - 1));
-//                        } catch (NumberFormatException nfe) {
-//                            // když není, nevadí
-//                        }
-//                        break;
-                    default:
-                        g.drawString(vstup.get(i).getValue(), vstup.get(i).getX() * sirkaZnaku + startX, startY - vstup.get(i).getY() * vyskaZnaku);
-
+            for (int i = 0; i < boundlist.size(); i++) {
+                g.drawRect(startX + boundlist.get(i).x * sirkaZnaku, startY + boundlist.get(i).y * vyskaZnaku - vyskaZnaku, boundlist.get(i).width * sirkaZnaku , boundlist.get(i).height * vyskaZnaku );
+                if(boundlist.get(i).e.getClass().equals(Constant.class) ||boundlist.get(i).e.getClass().equals(Variable.class) ){
+                    g.drawString(boundlist.get(i).e.toString(), startX + boundlist.get(i).x * sirkaZnaku, startY + boundlist.get(i).y * vyskaZnaku);
                 }
-//                System.out.println(vstup.get(i));
+                if(boundlist.get(i).e.getClass().equals(BinOp.class)){
+                    if(((BinOp)boundlist.get(i).e).operand=='/'){
+                            g.drawLine(startX + boundlist.get(i).x*sirkaZnaku, boundlist.get(i).y*vyskaZnaku + (((BinOp)boundlist.get(i).e).height()+1)*vyskaZnaku + vyskaZnaku/2, startX + (boundlist.get(i).width+boundlist.get(i).x)*sirkaZnaku, boundlist.get(i).y*vyskaZnaku + (((BinOp)boundlist.get(i).e).height()+1)*vyskaZnaku+ vyskaZnaku/2);                                      
+                    }else{
+                        g.drawString(Character.toString(((BinOp)boundlist.get(i).e).operand),startX + boundlist.get(i).x*sirkaZnaku +((BinOp)boundlist.get(i).e).c1.length()*sirkaZnaku , startY + (boundlist.get(i).y + boundlist.get(i).height/2)* vyskaZnaku);
+                    }
+                }
             }
-            System.out.println("");
         } catch (IndexOutOfBoundsException ex) {
             if (source.charAt(0) == '-' && source.length() == 1) {
                 g.drawString("-", startX, startY);

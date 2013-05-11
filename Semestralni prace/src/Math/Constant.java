@@ -102,4 +102,23 @@ public class Constant extends Expr {
     @Override
     public void changeVariable(Variable v) {       
     }
+
+    @Override
+    public int height() {
+        return 1;
+    }
+
+    @Override
+    public MathList<BoundingBox> getAllBoundingBoxs() {
+        MathList<BoundingBox> list = new MathList<BoundingBox>();
+        list.add(this.getBoundingBox());
+        return list;
+    }
+
+    @Override
+    public MathList<BoundingBox> getAllBoundingBoxs(int x, int y) {
+        MathList<BoundingBox> list = new MathList<BoundingBox>();
+        list.add(this.getBoundingBox(x, y));
+        return list;
+    }
 }

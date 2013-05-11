@@ -10,8 +10,6 @@ import Math.Expr;
 import Math.Variable;
 import System.MathList;
 import System.Source;
-import System.XCompareMathList;
-import System.YCompareMathList;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -49,7 +47,7 @@ public class Grafic {
             source = "0";
         }
         try {
-            MathList<DisplejNumber> vstup = new MathList();
+            MathList<BoundingBox> vstup = new MathList();
             vstup.fillColection(source);
             Expr p = vstup.fromMathList();
             MathList<BoundingBox> boundlist = p.getAllBoundingBoxs();
@@ -86,15 +84,5 @@ public class Grafic {
             y -= 15;
         }
         g.drawString(result, x, y);
-    }
-
-    public static int nejdelsiBunka(ArrayList<DisplejNumber> vstup) {
-        int nejdelsi = Integer.MIN_VALUE;
-        for (int i = 0; i < vstup.size(); i++) {
-            if (vstup.get(i).getValue().length() > nejdelsi) {
-                nejdelsi = vstup.get(i).getValue().length();
-            }
-        }
-        return nejdelsi;
     }
 }

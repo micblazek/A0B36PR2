@@ -1,7 +1,6 @@
 package Math;
 
 import GUI.BoundingBox;
-import GUI.DisplejNumber;
 import System.MathList;
 import java.util.ArrayList;
 
@@ -69,10 +68,6 @@ public abstract class Expr {
         }
         return delka;
     }
-    
-    public abstract MathList<DisplejNumber> ohodnot();
-    
-    public abstract MathList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka);
     
     public abstract BoundingBox getBoundingBox();
     

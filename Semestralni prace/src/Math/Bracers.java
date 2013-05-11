@@ -5,7 +5,6 @@
 package Math;
 
 import GUI.BoundingBox;
-import GUI.DisplejNumber;
 import System.MathList;
 import java.util.ArrayList;
 
@@ -46,38 +45,6 @@ public class Bracers extends Expr {
     @Override
     public String toString() {
         return b1 + value.toString() + b2;
-    }
-
-    @Override
-    public MathList<DisplejNumber> ohodnot() {
-        if (this.value.getClass() == BinOp.class) {
-            return ((BinOp) this.value).ohodnot();
-        } else {
-            if (this.value.getClass() == Constant.class) {
-                return ((Constant) this.value).ohodnot();
-            } else if (this.value.getClass() == NullSymbol.class) {
-                return ((NullSymbol) this.value).ohodnot();
-            } else {
-                if (this.value.getClass() == Variable.class) {
-                    return ((Variable) this.value).ohodnot();
-                } else {
-                    return ((Bracers) this.value).ohodnot();
-                }
-            }
-        }
-    }
-
-    @Override
-    public MathList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
-        if (this.value.getClass() == BinOp.class) {
-            return ((BinOp) this.value).ohodnot(postupX, delka, postupY, hloubka);
-        } else {
-            if (this.value.getClass() == Constant.class) {
-                return ((Constant) this.value).ohodnot(postupX, delka, postupY, hloubka);
-            } else {
-                return ((Bracers) this.value).ohodnot();
-            }
-        }
     }
 
     @Override

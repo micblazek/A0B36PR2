@@ -4,8 +4,6 @@
  */
 package System;
 
-import GUI.DisplejFraction;
-import GUI.DisplejNumber;
 import GUI.VstupException;
 import Math.*;
 import java.util.ArrayList;
@@ -253,31 +251,6 @@ public class MathList<T> extends ArrayList<T> {
         }
     }
 
-    public MathList<DisplejNumber> normalizuj() {
-        MathList<DisplejNumber> vstup = new MathList();
-
-        for (int i = 0; i < this.size() && (this.get(i).getClass().equals(DisplejNumber.class) || this.get(i).getClass().equals(DisplejFraction.class)); i++) {
-            vstup.add((DisplejNumber) this.get(i));
-        }
-
-        if (vstup.size() > 0) {
-            int maxX = Integer.MAX_VALUE, maxY = Integer.MIN_VALUE;
-            for (int i = 0; i < vstup.size(); i++) {
-                if (vstup.get(i).getX() < maxX) {
-                    maxX = vstup.get(i).getX();
-                }
-                if (vstup.get(i).getY() > maxY) {
-                    maxY = Math.abs(vstup.get(i).getY());
-                }
-            }
-            for (int i = 0; i < vstup.size(); i++) {
-                vstup.get(i).setX(vstup.get(i).getX() + Math.abs(maxX));
-                vstup.get(i).setY(vstup.get(i).getY() - maxY);
-            }
-        }
-        return vstup;
-    }
-
     public MathList<T> fillColection(String vstup) {
         /**
          * Metoda rozloží vstup String do kolekce ArrayList, rozlišuje čísla a
@@ -367,59 +340,6 @@ public class MathList<T> extends ArrayList<T> {
             }
         }
         return vystup;
-    }
-
-    public MathList<DisplejNumber> cleanWhiteSpaceInDisplejNuber() {
-        MathList<DisplejNumber> list = new MathList<DisplejNumber>();
-        list.add(((DisplejNumber) this.get(0)));
-        //Cyklus probíhá dokud i > size, a prvek je DisplejNuber nebo Fraction
-        for (int i = 1; i < this.size() && this.size() > 2 && (this.get(i - 1).getClass().equals(DisplejNumber.class) || this.get(i - 1).getClass().equals(DisplejFraction.class)) && (this.get(i).getClass().equals(DisplejNumber.class) || this.get(i).getClass().equals(DisplejFraction.class)); i++) {
-            //Prvek je DisplejNumber
-            if (this.get(i).getClass().equals(DisplejNumber.class)) {
-                //Prvek není o jednu větší nebo stejný
-                if (((list.get(i - 1)).getX() + 1 != ((DisplejNumber) this.get(i)).getX()) && (((DisplejNumber) this.get(i - 1)).getX() != ((DisplejNumber) this.get(i)).getX())) {
-                    list.add(new DisplejNumber(((DisplejNumber) this.get(i)).getValue(), ((DisplejNumber) this.get(i)).getX() - (((DisplejNumber) this.get(i)).getX() - list.get(i - 1).getX() - 1), ((DisplejNumber) this.get(i)).getY()));
-                } else {
-                    if ((((DisplejNumber) this.get(i - 1)).getX()) == ((DisplejNumber) this.get(i)).getX()) {
-                        list.add(new DisplejNumber(((DisplejNumber) this.get(i)).getValue(), list.get(i - 1).getX(), ((DisplejNumber) this.get(i)).getY()));
-                    } else {
-                        list.add(new DisplejNumber(((DisplejNumber) this.get(i)).getValue(), ((DisplejNumber) this.get(i)).getX(), ((DisplejNumber) this.get(i)).getY()));
-                    }
-                }
-
-            }
-            //Prvek je DisplejFraction (zlomek)
-            if (this.get(i).getClass().equals(DisplejFraction.class)) {
-                //Prvek je o jednu větší než předchozí nebo stejný
-                if (((list.get(i - 1)).getX() + 1 != ((DisplejFraction) this.get(i)).getX()) && (((DisplejNumber) this.get(i - 1)).getX() != ((DisplejFraction) this.get(i)).getX())) {
-                    list.add(new DisplejFraction(((DisplejFraction) this.get(i)).getValue(), ((DisplejFraction) this.get(i)).getX() - (((DisplejFraction) this.get(i)).getX() - list.get(i - 1).getX() - 1), ((DisplejFraction) this.get(i)).getY(), ((DisplejFraction) this.get(i)).getLenght()));
-                } else {
-                    list.add(new DisplejFraction(((DisplejFraction) this.get(i)).getValue(), ((DisplejFraction) this.get(i)).getX(), ((DisplejFraction) this.get(i)).getY(), ((DisplejFraction) this.get(i)).getLenght()));
-                }
-            }
-        }
-        return list;
-    }
-
-    public MathList<DisplejNumber> doSpacing() {
-        MathList<DisplejNumber> list = new MathList<DisplejNumber>();
-        list.add(((DisplejNumber) this.get(0)));
-        for (int i = 1; i < this.size(); i++) {
-            if (((DisplejNumber) this.get(i - 1)).getY() == ((DisplejNumber) this.get(i)).getY() && ((DisplejNumber) this.get(i - 1)).getX() + 1 == ((DisplejNumber) this.get(i)).getX()) {
-                if (this.get(i).getClass().equals(DisplejNumber.class)) {
-                    if (this.get(i - 1).getClass().equals(DisplejNumber.class)) {
-                        list.add(new DisplejNumber(((DisplejNumber) this.get(i)).getValue(), list.get(i - 1).getX() + list.get(i - 1).getValue().toString().length(), ((DisplejNumber) this.get(i)).getY()));
-                    } else {
-                        list.add(new DisplejNumber(((DisplejNumber) this.get(i)).getValue(), list.get(i - 1).getX() + ((DisplejFraction) list.get(i - 1)).getLenght(), ((DisplejNumber) this.get(i)).getY()));
-                    }
-                } else {
-                    list.add(new DisplejFraction(((DisplejNumber) this.get(i)).getValue(), ((DisplejNumber) this.get(i - 1)).getX() + ((DisplejNumber) this.get(i - 1)).getValue().toString().length(), ((DisplejNumber) this.get(i)).getY(), ((DisplejFraction) this.get(i)).getLenght()));
-                }
-            } else {
-                list.add(((DisplejNumber) this.get(i)));
-            }
-        }
-        return list;
     }
     
     public MathList reductionDuplicates(){

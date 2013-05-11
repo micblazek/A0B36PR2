@@ -5,7 +5,6 @@
 package Math;
 
 import GUI.BoundingBox;
-import GUI.DisplejNumber;
 import System.MathList;
 import java.util.ArrayList;
 
@@ -33,20 +32,6 @@ public class NullSymbol extends Expr {
     @Override
     public Expr simplify() {
         return new NullSymbol();
-    }
-
-    @Override
-    public MathList<DisplejNumber> ohodnot() {
-        MathList<DisplejNumber> list = new MathList<DisplejNumber>();
-        list.add(new DisplejNumber(this.toString(), 0, 0));
-        return list;
-    }
-
-    @Override
-    public MathList<DisplejNumber> ohodnot(ArrayList<Character> postupX, int delka, ArrayList<Character> postupY, int hloubka) {
-        MathList<DisplejNumber> list = new MathList<DisplejNumber>();
-        list.add(new DisplejNumber(this.toString(), BinOp.xGeometrickaRada(delka, postupX), BinOp.yGeometrickaRada(hloubka, postupY)));
-        return list;
     }
 
     @Override

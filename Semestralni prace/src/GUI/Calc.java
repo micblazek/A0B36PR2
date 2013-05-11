@@ -124,11 +124,6 @@ public class Calc extends javax.swing.JFrame {
         setTitle("Racionální kalkulačka");
         setLocationByPlatform(true);
         setResizable(false);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowActivated(java.awt.event.WindowEvent evt) {
-                formWindowActivated(evt);
-            }
-        });
 
         btn0.setText("0");
         btn0.addActionListener(new java.awt.event.ActionListener() {
@@ -266,7 +261,7 @@ public class Calc extends javax.swing.JFrame {
             }
         });
 
-        btnSimply.setText("Simply");
+        btnSimply.setText("Simplify");
         btnSimply.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSimplyActionPerformed(evt);
@@ -334,7 +329,7 @@ public class Calc extends javax.swing.JFrame {
             }
         });
 
-        btnVariable.setText("Variable");
+        btnVariable.setText("Variables");
         btnVariable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnVariableActionPerformed(evt);
@@ -705,16 +700,6 @@ public class Calc extends javax.swing.JFrame {
         f.repaint();
         f.setVisible(true);
     }//GEN-LAST:event_btnVariableActionPerformed
-
-    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        if (vari) {
-            f.setBounds(this.getX() + this.getWidth(), this.getY(), 150, this.getHeight());
-            MathList<Variable> variable = f.VariableList();
-            vari = true;
-            f.setVisible(true);
-            f.repaint();
-        }
-    }//GEN-LAST:event_formWindowActivated
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */

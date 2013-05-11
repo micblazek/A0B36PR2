@@ -27,7 +27,7 @@ public class BoundingBox {
 
     @Override
     public String toString() {
-        return e.toString()+" ["+x+", "+y+"], ("+width+", "+height+")";
+        return e.toString()+" ["+x+", "+y+"], ("+width+", "+height+")\n";
     }
 
     public int getX() {

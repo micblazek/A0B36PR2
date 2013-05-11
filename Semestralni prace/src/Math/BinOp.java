@@ -354,12 +354,12 @@ public class BinOp extends Expr {
     public BoundingBox getBoundingBox(int x, int y) {
         if (operand == '/') {
             if (this.c1.toString().length() > this.c2.toString().length()) {
-                return new BoundingBox(this, x, y, this.c1.length(), 2);
+                return new BoundingBox(this, x, y, this.length(), this.height());
             } else {
-                return new BoundingBox(this, x, y, this.c2.length(), 2);
+                return new BoundingBox(this, x, y, this.length(), this.height());
             }
         } else {
-            return new BoundingBox(this, x, y, this.length(), 1);
+            return new BoundingBox(this, x, y, this.length(), this.height());
         }
     }
 
@@ -445,7 +445,7 @@ public class BinOp extends Expr {
                     if (((BinOp) this.c2).operand == '/') {
                         list.addAll(this.c2.getAllBoundingBoxs(c1.length() + 1, 0));
                     } else {
-                        list.addAll(this.c2.getAllBoundingBoxs(c1.length() + 1, (c1.height() - 1) / 2));
+                        list.addAll(this.c2.getAllBoundingBoxs(c1.length() + 1, (c1.height() - 1) %2));
                     }
                 } else {
                     list.addAll(this.c2.getAllBoundingBoxs(c1.length() + 1, (c1.height() - 1) / 2));
@@ -454,7 +454,11 @@ public class BinOp extends Expr {
                 list.addAll(this.c2.getAllBoundingBoxs(0, c1.height() + 1));
             }
         } else {
-            list.addAll(this.c1.getAllBoundingBoxs(0, (c2.height() - 1) / 2));
+             if(this.c1.height()<this.height()){
+                list.addAll(this.c1.getAllBoundingBoxs(0, (c2.height() - 1) / 2));
+            }else{
+                list.addAll(this.c1.getAllBoundingBoxs(0,(c2.height() - 1) % 2));
+            }
             if (operand != '/') {
                 list.addAll(this.c2.getAllBoundingBoxs(c1.length() + 1, 0));
             } else {
@@ -471,23 +475,28 @@ public class BinOp extends Expr {
         MathList<BoundingBox> list = new MathList<BoundingBox>();
         list.add(this.getBoundingBox(x, y));
 
-        if (c1.height() > c2.height()) {
+        if (c1.height() >= c2.height()) {
             list.addAll(this.c1.getAllBoundingBoxs(x, y));
             if (operand != '/') {
                 if (this.c2.getClass().equals(BinOp.class)) {
                     if (((BinOp) this.c2).operand == '/') {
                         list.addAll(this.c2.getAllBoundingBoxs(x + c1.length() + 1, y));
                     } else {
-                        list.addAll(this.c2.getAllBoundingBoxs(x + c1.length() + 1, y +(c1.height() - 1) / 2));
+                        list.addAll(this.c2.getAllBoundingBoxs(x + c1.length() + 1, y + (c1.height() - 1) % 2));
                     }
                 } else {
-                    list.addAll(this.c2.getAllBoundingBoxs(x + c1.length() + 1, y +(c1.height() - 1) / 2));
+                    list.addAll(this.c2.getAllBoundingBoxs(x + c1.length() + 1, y + (c1.height() - 1) / 2));
                 }
             } else {
-                list.addAll(this.c2.getAllBoundingBoxs(x, y + (c1.height() + 1) / 2));
+                list.addAll(this.c2.getAllBoundingBoxs(x, y + (c1.height() + 1)));
             }
-        } else {
-            list.addAll(this.c1.getAllBoundingBoxs(x, y + (c2.height() - 1) / 2));
+        } else {        
+            if(this.c1.height()<this.height()){
+                list.addAll(this.c1.getAllBoundingBoxs(x, y + (c2.height() - 1) / 2));
+            }else{
+                list.addAll(this.c1.getAllBoundingBoxs(x, y + (c2.height() - 1) % 2));
+            }
+            
             if (operand != '/') {
                 list.addAll(this.c2.getAllBoundingBoxs(x + c1.length() + 1, y));
             } else {

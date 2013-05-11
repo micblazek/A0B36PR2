@@ -36,12 +36,12 @@ public class NullSymbol extends Expr {
 
     @Override
     public BoundingBox getBoundingBox() {
-        return new BoundingBox(this, 0, 0, 0, 0);
+        return new BoundingBox(this, 0, 0, this.length(), this.height());
     }
 
     @Override
     public BoundingBox getBoundingBox(int x, int y) {
-        return new BoundingBox(this, x, y, 0, 0);
+        return new BoundingBox(this, x, y, this.length(), this.height());
     }   
 
     @Override

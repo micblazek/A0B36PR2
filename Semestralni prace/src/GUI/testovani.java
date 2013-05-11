@@ -4,23 +4,26 @@
  */
 package GUI;
 
+import System.Source;
+import java.util.ArrayList;
+import Math.*;
+import System.MathList;
+import java.util.Collections;
+
 /**
  *
  * @author michalblazek
  */
 public class testovani {
 
-    public static void main(String[] args) {
-        int i = 3;
-        switch (i) {
-            case 1:
-                System.out.println("1");
-                break;
-            case 3:
-                System.out.println("3");
-                break;
-            default:
-                System.out.println("ahoj");
-        }
+    public static void main(String[] args) throws IndexOutOfBoundsException, VstupException {      
+        MathList<BoundingBox> list = new MathList();
+        list.fillColection("3+1/2");
+        System.out.println(list);
+        Expr p = list.fromMathList();
+        System.out.println(p.getAllBoundingBoxs());
+
+
+
     }
 }

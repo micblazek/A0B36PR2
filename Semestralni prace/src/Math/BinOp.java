@@ -7,7 +7,6 @@ package Math;
 import GUI.BoundingBox;
 import System.MathList;
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  *

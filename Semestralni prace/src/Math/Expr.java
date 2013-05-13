@@ -2,7 +2,6 @@ package Math;
 
 import GUI.BoundingBox;
 import System.MathList;
-import java.util.ArrayList;
 
 public abstract class Expr {
 

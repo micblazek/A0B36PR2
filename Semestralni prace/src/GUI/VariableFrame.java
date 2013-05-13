@@ -2,10 +2,8 @@ package GUI;
 
 import Math.Variable;
 import System.MathList;
-import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.JTable;
-import javax.swing.plaf.FontUIResource;
 
 
 /*

@@ -9,14 +9,7 @@ import Math.Constant;
 import Math.Expr;
 import Math.Variable;
 import System.MathList;
-import System.Source;
-import java.awt.Color;
 import java.awt.Graphics;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 

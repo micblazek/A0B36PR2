@@ -156,6 +156,12 @@ public class MathList<T> extends ArrayList<T> {
                     List.remove(i - 1);
                     i--;
                     mocnina--;
+                } catch (ClassCastException cce) {
+                    List.set(i, new BinOp(String.valueOf(List.get(i)).toCharArray()[0], (Expr) List.get(i - 1), new NullSymbol()));
+                    List.remove(i + 1);
+                    List.remove(i - 1);
+                    i--;
+                    mocnina--;
                 }
             } else {
                 i--;
@@ -341,18 +347,18 @@ public class MathList<T> extends ArrayList<T> {
         }
         return vystup;
     }
-    
-    public MathList reductionDuplicates(){
+
+    public MathList reductionDuplicates() {
         for (int i = 0; i < this.size(); i++) {
             MathList sublist = new MathList();
-            sublist.addAll(this.subList(i+1, this.size()));
-            for (int j = sublist.size()-1; j >= 0; j--) {
-                if(this.get(i).toString().equals(sublist.get(j).toString())){
-                    this.remove(i+j+1);
-                    
-                }         
+            sublist.addAll(this.subList(i + 1, this.size()));
+            for (int j = sublist.size() - 1; j >= 0; j--) {
+                if (this.get(i).toString().equals(sublist.get(j).toString())) {
+                    this.remove(i + j + 1);
+
+                }
             }
-            
+
         }
         return this;
     }

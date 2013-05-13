@@ -18,7 +18,7 @@ public class testovani {
 
     public static void main(String[] args) throws IndexOutOfBoundsException, VstupException {
         MathList<BoundingBox> list = new MathList();
-        list.fillColection("1+2/3");
+        list.fillColection("1^2+3");
         System.out.println(list);
         Expr p = list.fromMathList();
         list.removeAll(list);

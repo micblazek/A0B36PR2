@@ -53,15 +53,19 @@ public class Grafic {
             MathList<BoundingBox> boundlist = p.getAllBoundingBoxs();
 
             for (int i = 0; i < boundlist.size(); i++) {
-                //g.drawRect(startX + boundlist.get(i).x * sirkaZnaku, startY + boundlist.get(i).y * vyskaZnaku - vyskaZnaku, boundlist.get(i).width * sirkaZnaku , boundlist.get(i).height * vyskaZnaku );
                 if (boundlist.get(i).e.getClass().equals(Constant.class) || boundlist.get(i).e.getClass().equals(Variable.class)) {
                     g.drawString(boundlist.get(i).e.toString(), startX + boundlist.get(i).x * sirkaZnaku, startY + boundlist.get(i).y * vyskaZnaku);
                 }
                 if (boundlist.get(i).e.getClass().equals(BinOp.class)) {
-                    if (((BinOp) boundlist.get(i).e).operand == '/') {
-                        g.drawLine(startX + boundlist.get(i).x * sirkaZnaku, startY + boundlist.get(i).y * vyskaZnaku + ((BinOp) boundlist.get(i).e).c1.height() * vyskaZnaku - vyskaZnaku / 2, startX + (boundlist.get(i).width + boundlist.get(i).x) * sirkaZnaku,  startY + boundlist.get(i).y * vyskaZnaku + ((BinOp) boundlist.get(i).e).c1.height() * vyskaZnaku - vyskaZnaku / 2);
-                    } else {
-                        g.drawString(Character.toString(((BinOp) boundlist.get(i).e).operand), startX + boundlist.get(i).x * sirkaZnaku + ((BinOp) boundlist.get(i).e).c1.length() * sirkaZnaku, startY + (boundlist.get(i).y + boundlist.get(i).height / 2) * vyskaZnaku);
+                    switch (((BinOp) boundlist.get(i).e).operand) {
+                        case '/':
+                            g.drawLine(startX + boundlist.get(i).x * sirkaZnaku, startY + boundlist.get(i).y * vyskaZnaku + ((BinOp) boundlist.get(i).e).c1.height() * vyskaZnaku - vyskaZnaku / 2, startX + (boundlist.get(i).width + boundlist.get(i).x) * sirkaZnaku, startY + boundlist.get(i).y * vyskaZnaku + ((BinOp) boundlist.get(i).e).c1.height() * vyskaZnaku - vyskaZnaku / 2);
+                            break;
+                        case '^':
+
+                            break;
+                        default:
+                            g.drawString(Character.toString(((BinOp) boundlist.get(i).e).operand), startX + boundlist.get(i).x * sirkaZnaku + ((BinOp) boundlist.get(i).e).c1.length() * sirkaZnaku, startY + (boundlist.get(i).y + boundlist.get(i).height / 2) * vyskaZnaku);
                     }
                 }
             }

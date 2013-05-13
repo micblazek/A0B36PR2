@@ -365,14 +365,17 @@ public class BinOp extends Expr {
 
     @Override
     public int length() {
-        if (operand == '/') {
-            if (this.c1.length() > this.c2.length()) {
-                return this.c1.length();
-            } else {
-                return this.c2.length();
-            }
-        } else {
-            return c1.length() + c2.length() + 1;
+        switch (operand) {
+            case '/':
+                if (this.c1.length() > this.c2.length()) {
+                    return this.c1.length();
+                } else {
+                    return this.c2.length();
+                }
+            case '^':
+                return c1.length() + c2.length();
+            default:
+                return c1.length() + c2.length() + 1;
         }
     }
 
@@ -422,14 +425,17 @@ public class BinOp extends Expr {
 
     @Override
     public int height() {
-        if (operand == '/') {
-            return c1.height() + c2.height() + 1;
-        } else {
-            if (this.c1.height() > this.c2.height()) {
-                return this.c1.height();
-            } else {
-                return this.c2.height();
-            }
+        switch (operand) {
+            case '/':
+                return c1.height() + c2.height() + 1;
+            case '^':
+                return c1.height() + c2.height()+1;
+            default:
+                if (this.c1.height() > this.c2.height()) {
+                    return this.c1.height();
+                } else {
+                    return this.c2.height();
+                }
         }
     }
 
@@ -438,26 +444,33 @@ public class BinOp extends Expr {
         MathList<BoundingBox> list = new MathList<BoundingBox>();
         list.add(this.getBoundingBox());
 
-        if (operand == '/') {
-            if (c1.length() > c2.length()) {
-                //Čitatel je delší než jmenovatel
-                list.addAll(c1.getAllBoundingBoxs());
-                list.addAll(c2.getAllBoundingBoxs((int) (c1.length() / 2.0 - c2.length() / 2.0), c1.height() + 1));
-            } else {
-                //Jmenovatel je delší než čitatel
-                list.addAll(c1.getAllBoundingBoxs((int) (c2.length() / 2.0 - c1.length() / 2.0), 0));
-                list.addAll(c2.getAllBoundingBoxs(0, c1.height() + 1));
-            }
-        } else {
-            if (c1.height() > c2.height()) {
-                // První sčítanec je vyšší než druhý
-                list.addAll(c1.getAllBoundingBoxs());
-                list.addAll(c2.getAllBoundingBoxs(c1.length() + 1, (int) (c1.height() / 2.0 - c2.height() / 2.0)));
-            } else {
-                // Druhý sčítanec je vyšší než druhý
-                list.addAll(c1.getAllBoundingBoxs(0, (int) (c2.height() / 2.0 - c1.height() / 2.0)));
-                list.addAll(c2.getAllBoundingBoxs(c1.length() + 1, 0));
-            }
+        switch (operand) {
+            case '/':
+                if (c1.length() > c2.length()) {
+                    //Čitatel je delší než jmenovatel
+                    list.addAll(c1.getAllBoundingBoxs());
+                    list.addAll(c2.getAllBoundingBoxs((int) (c1.length() / 2.0 - c2.length() / 2.0), c1.height() + 1));
+                } else {
+                    //Jmenovatel je delší než čitatel
+                    list.addAll(c1.getAllBoundingBoxs((int) (c2.length() / 2.0 - c1.length() / 2.0), 0));
+                    list.addAll(c2.getAllBoundingBoxs(0, c1.height() + 1));
+                }
+                break;
+            case '^':
+                //Zápis mocněnce a mocnitele
+                list.addAll(c1.getAllBoundingBoxs(0, c2.height()));
+                list.addAll(c2.getAllBoundingBoxs(c1.length(), 0));
+                break;
+            default:
+                if (c1.height() > c2.height()) {
+                    // První sčítanec je vyšší než druhý
+                    list.addAll(c1.getAllBoundingBoxs());
+                    list.addAll(c2.getAllBoundingBoxs(c1.length() + 1, (int) (c1.height() / 2.0 - c2.height() / 2.0)));
+                } else {
+                    // Druhý sčítanec je vyšší než druhý
+                    list.addAll(c1.getAllBoundingBoxs(0, (int) (c2.height() / 2.0 - c1.height() / 2.0)));
+                    list.addAll(c2.getAllBoundingBoxs(c1.length() + 1, 0));
+                }
         }
         return list;
     }
@@ -467,26 +480,33 @@ public class BinOp extends Expr {
         MathList<BoundingBox> list = new MathList<BoundingBox>();
         list.add(this.getBoundingBox(x, y));
 
-        if (operand == '/') {
-            if (c1.length() > c2.length()) {
-                //Čitatel je delší než jmenovatel
-                list.addAll(c1.getAllBoundingBoxs(x, y));
-                list.addAll(c2.getAllBoundingBoxs(x + (int) (c1.length() / 2.0 - c2.length() / 2.0), y + c1.height() + 1));
-            } else {
-                //Jmenovatel je delší než čitatel
-                list.addAll(c1.getAllBoundingBoxs(x + (int) (c2.length() / 2.0 - c1.length() / 2.0), y));
-                list.addAll(c2.getAllBoundingBoxs(x, y + c1.height() + 1));
-            }
-        } else {
-            if (c1.height() > c2.height()) {
-                // První sčítanec je vyšší než druhý
-                list.addAll(c1.getAllBoundingBoxs(x, y));
-                list.addAll(c2.getAllBoundingBoxs(x + c1.length() + 1, y + (int) (c1.height() / 2.0 - c2.height() / 2.0)));
-            } else {
-                // Druhý sčítanec je vyšší než druhý
-                list.addAll(c1.getAllBoundingBoxs(x, y + (int) (c2.height() / 2.0 - c1.height() / 2.0)));
-                list.addAll(c2.getAllBoundingBoxs(x + c1.length() + 1, y));
-            }
+        switch (operand) {
+            case '/':
+                if (c1.length() > c2.length()) {
+                    //Čitatel je delší než jmenovatel
+                    list.addAll(c1.getAllBoundingBoxs(x, y));
+                    list.addAll(c2.getAllBoundingBoxs(x + (int) (c1.length() / 2.0 - c2.length() / 2.0), y + c1.height() + 1));
+                } else {
+                    //Jmenovatel je delší než čitatel
+                    list.addAll(c1.getAllBoundingBoxs(x + (int) (c2.length() / 2.0 - c1.length() / 2.0), y));
+                    list.addAll(c2.getAllBoundingBoxs(x, y + c1.height() + 1));
+                }
+                break;
+            case '^':
+                //Zápis mocněnce a mocnitele
+                list.addAll(c1.getAllBoundingBoxs(x, y + c2.height()));
+                list.addAll(c2.getAllBoundingBoxs(x + c1.length(), y));
+                break;
+            default:
+                if (c1.height() > c2.height()) {
+                    // První sčítanec je vyšší než druhý
+                    list.addAll(c1.getAllBoundingBoxs(x, y));
+                    list.addAll(c2.getAllBoundingBoxs(x + c1.length() + 1, y + (int) (c1.height() / 2.0 - c2.height() / 2.0)));
+                } else {
+                    // Druhý sčítanec je vyšší než druhý
+                    list.addAll(c1.getAllBoundingBoxs(x, y + (int) (c2.height() / 2.0 - c1.height() / 2.0)));
+                    list.addAll(c2.getAllBoundingBoxs(x + c1.length() + 1, y));
+                }
         }
         return list;
     }

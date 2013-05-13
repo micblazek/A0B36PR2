@@ -16,14 +16,17 @@ import java.util.Collections;
  */
 public class testovani {
 
-    public static void main(String[] args) throws IndexOutOfBoundsException, VstupException {      
+    public static void main(String[] args) throws IndexOutOfBoundsException, VstupException {
         MathList<BoundingBox> list = new MathList();
-        list.fillColection("3+1/2");
+        list.fillColection("1+2/3");
         System.out.println(list);
         Expr p = list.fromMathList();
-        System.out.println(p.getAllBoundingBoxs());
-
-
-
+        list.removeAll(list);
+        list.addAll(p.getAllBoundingBoxs());
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getWidth() == 1 && list.get(i).height ==1) {
+                System.out.print(list.get(i));
+            }
+        }
     }
 }

@@ -8,24 +8,11 @@ import Math.*;
 import System.MathList;
 import System.Source;
 import java.awt.Graphics;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultCellEditor;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JTextField;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.filechooser.FileView;
-import javax.swing.plaf.basic.BasicComboBoxUI;
 
 /**
  *
@@ -599,38 +586,6 @@ public class Calc extends javax.swing.JFrame {
             vstup = "0";
         }
         txtVstup.setText(vstup);
-
-//        MathList input;
-//        input = new MathList().fillColection(vstup);
-//        try {
-//                if (input.bracers()) {
-//                    vysledek = Double.toString(input.fromMathList().evaluate());
-//                    Displej.repaint();
-//                } else {
-//                    vysledek = "Chybná syntaxe, zkontroluj závorky.";
-//                    Displej.repaint();
-//                }
-//        } catch (NumberFormatException ex) {
-//            vysledek = "Chyba vstupních dat.";
-//            System.out.println("NumberFormatException");
-//            Displej.repaint();
-//        } catch (ArrayIndexOutOfBoundsException ey) {
-//            vysledek = "Chyba vstupních dat.";
-//            System.out.println("ArrayIndexOutOfBoundsException");
-//            Displej.repaint();
-//        } catch (ClassCastException ez) {
-//            vysledek = "Chyba vstupních dat.";
-//            System.out.println("ClassCastException");
-//            Displej.repaint();
-//        } catch (IndexOutOfBoundsException ex) {
-//            vysledek = "Chyba vstupních dat.";
-//            System.out.println("IndexOutOfBoundsException");
-//            Displej.repaint();
-//        } catch (VstupException ex) {
-//            vysledek = "Chyba vstupních dat.";
-//            System.out.println("VstupException");
-//            Displej.repaint();
-//        }
     }//GEN-LAST:event_mNacistActionPerformed
 
     private void mKonecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mKonecActionPerformed
@@ -769,7 +724,7 @@ public class Calc extends javax.swing.JFrame {
         }
         f.repaint();
         btnOdmocnina.setVisible(false);
-        btnMocnina.setVisible(false);
+        //btnMocnina.setVisible(false);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Displej;

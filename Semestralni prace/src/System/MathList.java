@@ -125,10 +125,16 @@ public class MathList<T> extends ArrayList<T> {
             indexKZ = 0;
             indexZZ = Integer.MAX_VALUE;
         }
+        
+        for (int i = 0; i < List.size(); i++) {
+            if(List.get(i).getClass().equals(Variable.class) && List.get(i-1).getClass().equals(Constant.class)){
+                List.add(i, "*");
+            } 
+        }      
         // Jestliže je za nebo před závorkou číslo bude bude mezi číslo a závorku vložen znak násobení.
         for (int i = 0; i < List.size() - 1; i++) {
             if (Character.isDigit(List.get(i).toString().charAt(0)) && Character.isDigit(List.get(i + 1).toString().charAt(0))) {
-                List.add(i + 1, '*');
+                List.add(i + 1, "*");
             }
         }
         /**
